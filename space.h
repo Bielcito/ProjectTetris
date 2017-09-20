@@ -9,6 +9,8 @@ class Space
 {
 public:
     Space();
+    void setBlock(Block* block);
+    bool hasBlock();
 private:
     Block* block;
 };

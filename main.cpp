@@ -12,7 +12,7 @@ int main()
     Board board(20, 8);
     Piece p(Pieces::T);
 
-    cout << p.toString() << endl;
+    cout << board.mountPiece(&p, 0, 1) << endl;
 
     return 0;
 }

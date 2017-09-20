@@ -17,6 +17,7 @@ class Piece
 public:
     Piece(Pieces p);
     string toString();
+    Block* getPivot();
 private:
     string toStringAux(Block *actual, Block* last, std::string r);
     vector<Block*> blocks;

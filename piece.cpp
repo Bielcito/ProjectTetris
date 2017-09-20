@@ -3,7 +3,7 @@
 Piece::Piece(Pieces P)
 {
     this->blocks = vector<Block*>(4);
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 4; ++i)
     {
         this->blocks[i] = new Block(this);
     }
@@ -44,6 +44,11 @@ string Piece::toString()
     string result = toStringAux(this->pivot, NULL, "Pivot->");
 
     return result;
+}
+
+Block *Piece::getPivot()
+{
+    return this->pivot;
 }
 
 string Piece::toStringAux(Block* actual, Block* last, string r)

@@ -11,17 +11,27 @@ using std::size_t;
 class Board
 {
 public:
-    Board(size_t n, size_t m);
+    Board(unsigned int n, unsigned int m);
 
     size_t getRowSize();
     size_t getColSize();
-
-    void setPiece(int** p);
+    bool mountPiece(Piece *p, unsigned int row, unsigned int col);
+    bool setBlock(Block* b, unsigned int row, unsigned int col);
 
 private:
     Space** board;
     size_t rowSize;
     size_t colSize;
+
+    bool mountPieceAux(Block *actual, Block* last, int row, int col);
+
+    struct mountHistory{
+        Block* b;
+        unsigned int posX;
+        unsigned int posY;
+    };
+
+    vector<mountHistory> history;
 };
 
 #endif // BOARD_H
