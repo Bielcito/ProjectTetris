@@ -30,13 +30,14 @@ bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
 
 bool Board::setBlock(Block *b, unsigned int row, unsigned int col)
 {
-    if(row >= this->rowSize && col >= this->colSize)
+    if(row >= this->rowSize || col >= this->colSize)
     {
-        this->board[row][col].setBlock(b);
-        return true;
+        return false;
     }
 
-    return false;
+    this->board[row][col].setBlock(b);
+
+    return true;
 }
 
 bool Board::mountPieceAux(Block *actual, Block *last, int row, int col)
@@ -46,6 +47,7 @@ bool Board::mountPieceAux(Block *actual, Block *last, int row, int col)
     // Testa os parâmetros, retorna falso se menor que zero
     if(row < 0 || col < 0)
     {
+        cout << "Erro" << endl;
         return false;
     }
 

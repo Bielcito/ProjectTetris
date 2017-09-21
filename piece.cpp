@@ -3,39 +3,66 @@
 Piece::Piece(Pieces P)
 {
     this->blocks = vector<Block*>(4);
+    this->pivot = blocks[0];
     for(int i = 0; i < 4; ++i)
     {
         this->blocks[i] = new Block(this);
     }
 
-    // 1 x 1
-    //   1
+    // x 1 2
+    //   3
     if(P == Pieces::T)
     {
-        this->pivot = blocks[0];
-        this->blocks[0]->connect(blocks[1], Direction::Down);
-        this->blocks[0]->connect(blocks[2], Direction::Left);
-        this->blocks[0]->connect(blocks[3], Direction::Right);
+        this->blocks[0]->connect(blocks[1], Direction::Right);
+        this->blocks[1]->connect(blocks[2], Direction::Right);
+        this->blocks[1]->connect(blocks[3], Direction::Down);
     }
+    // x 1 2
+    // 3
     else if(P == Pieces::L)
     {
-
+        this->blocks[0]->connect(blocks[1], Direction::Right);
+        this->blocks[1]->connect(blocks[2], Direction::Right);
+        this->blocks[0]->connect(blocks[3], Direction::Down);
     }
-    else if(P == Pieces::L)
+    // x 1 2
+    //     3
+    else if(P == Pieces::_L)
     {
-
+        this->blocks[0]->connect(blocks[1], Direction::Right);
+        this->blocks[1]->connect(blocks[2], Direction::Right);
+        this->blocks[2]->connect(blocks[3], Direction::Down);
     }
-    else if(P == Pieces::L)
+    //   x 1
+    // 2 3
+    else if(P == Pieces::S)
     {
-
+        this->blocks[0]->connect(blocks[1], Direction::Right);
+        this->blocks[2]->connect(blocks[3], Direction::Right);
+        this->blocks[0]->connect(blocks[3], Direction::Down);
     }
-    else if(P == Pieces::L)
+    // x 1
+    //   2 3
+    else if(P == Pieces::_S)
     {
-
+        this->blocks[0]->connect(blocks[1], Direction::Right);
+        this->blocks[2]->connect(blocks[3], Direction::Right);
+        this->blocks[1]->connect(blocks[2], Direction::Down);
     }
-    else if(P == Pieces::L)
+    // x 1 2 3
+    else if(P == Pieces::I)
     {
-
+        this->blocks[0]->connect(blocks[1], Direction::Right);
+        this->blocks[1]->connect(blocks[2], Direction::Right);
+        this->blocks[2]->connect(blocks[3], Direction::Right);
+    }
+    // x 1
+    // 2 3
+    else if(P == Pieces::O)
+    {
+        this->blocks[0]->connect(blocks[1], Direction::Right);
+        this->blocks[2]->connect(blocks[3], Direction::Right);
+        this->blocks[0]->connect(blocks[2], Direction::Down);
     }
 }
 
@@ -46,9 +73,38 @@ string Piece::toString()
     return result;
 }
 
-Block *Piece::getPivot()
+Block* Piece::getPivot()
 {
     return this->pivot;
+}
+
+vector<Block*> Piece::getBlocks()
+{
+    return this->blocks;
+}
+
+void Piece::rotate90()
+{
+    for(int i = 0; i < 4; i++)
+    {
+        this->blocks[i]->rotate90();
+    }
+}
+
+void Piece::rotate180()
+{
+    for(int i = 0; i < 4; i++)
+    {
+        this->blocks[i]->rotate180();
+    }
+}
+
+void Piece::rotate270()
+{
+    for(int i = 0; i < 4; i++)
+    {
+        this->blocks[i]->rotate270();
+    }
 }
 
 string Piece::toStringAux(Block* actual, Block* last, string r)
