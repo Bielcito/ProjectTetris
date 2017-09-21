@@ -3,7 +3,7 @@
 
 enum Pieces
 {
-    O, T, L, _L, S, _S
+    O, T, L, _L, S, _S, I
 };
 
 #endif // PIECES_H

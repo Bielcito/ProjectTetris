@@ -72,6 +72,7 @@ bool Board::mountPieceAux(Block* actual, Block* last, int row, int col)
     // Testa os parâmetros, retorna falso se menor que zero
     if(row < 0 || col < 0)
     {
+        cout << "Erro" << endl;
         return false;
     }
 

@@ -53,6 +53,35 @@ Block* Block::get(Direction d)
     }
 }
 
+void Block::rotate90()
+{
+    Block* aux = this->up;
+    this->up = this->left;
+    this->left = this->down;
+    this->down = this->right;
+    this->right = aux;
+}
+
+void Block::rotate180()
+{
+    Block* aux = this->up;
+    this->up = this->down;
+    this->down = aux;
+
+    aux = this->left;
+    this->left = this->right;
+    this->right = aux;
+}
+
+void Block::rotate270()
+{
+    Block* aux = this->up;
+    this->up = this->right;
+    this->right = this->down;
+    this->down = this->left;
+    this->left = aux;
+}
+
 void Block::connectAux(Block *block, Direction d)
 {
     if(d == Up)
