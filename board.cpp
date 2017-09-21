@@ -10,7 +10,29 @@ Board::Board(unsigned int n, unsigned int m)
     }
 
     this->rowSize = n;
-    this->colSize = m;
+	this->colSize = m;
+}
+
+string Board::toString()
+{
+	string result = "";
+	for(int i = 0; i < this->rowSize; i++)
+	{
+		for(int j = 0; j < this->colSize; j++)
+		{
+			if(this->board[i][j].hasBlock())
+			{
+				result += "1 ";
+			}
+			else
+			{
+				result += "0 ";
+			}
+		}
+		result += "\n";
+	}
+
+	return result;
 }
 
 size_t Board::getRowSize()
@@ -28,21 +50,25 @@ bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
     return mountPieceAux(p->getPivot(), NULL, row, col);
 }
 
-bool Board::setBlock(Block *b, unsigned int row, unsigned int col)
+bool Board::setBlock(Block* b, unsigned int row, unsigned int col)
 {
-    if(row >= this->rowSize && col >= this->colSize)
+	if(row >= this->rowSize || col >= this->colSize)
     {
-        this->board[row][col].setBlock(b);
-        return true;
+		return false;
     }
 
-    return false;
+	if(this->board[row][col].hasBlock())
+	{
+		return false;
+	}
+
+	this->board[row][col].setBlock(b);
+
+	return true;
 }
 
-bool Board::mountPieceAux(Block *actual, Block *last, int row, int col)
+bool Board::mountPieceAux(Block* actual, Block* last, int row, int col)
 {
-    bool flag = true;
-
     // Testa os parâmetros, retorna falso se menor que zero
     if(row < 0 || col < 0)
     {
@@ -52,23 +78,37 @@ bool Board::mountPieceAux(Block *actual, Block *last, int row, int col)
     // Posiciona a peça da vez no tabuleiro, retorna verdadeiro se conseguir
     if(this->setBlock(actual, row, col))
     {
-        if(actual->get(Up) && actual->get(Up) != last)
+		if(actual->get(Up) && actual->get(Up) != last)
         {
-            flag = flag && this->mountPieceAux(actual->get(Up), actual, row-1, col);
+			if(!this->mountPieceAux(actual->get(Up), actual, row-1, col))
+			{
+				return false;
+			}
         }
         if(actual->get(Down) && actual->get(Down) != last)
         {
-            flag = flag && this->mountPieceAux(actual->get(Down), actual, row+1, col);
+			if(!this->mountPieceAux(actual->get(Down), actual, row+1, col))
+			{
+				return false;
+			}
         }
         if(actual->get(Left) && actual->get(Left) != last)
         {
-            flag = flag && this->mountPieceAux(actual->get(Left), actual, row, col-1);
+			if(!this->mountPieceAux(actual->get(Left), actual, row, col-1))
+			{
+				return false;
+			}
         }
         if(actual->get(Right) && actual->get(Right) != last)
         {
-            flag = flag && this->mountPieceAux(actual->get(Right), actual, row, col+1);
+			if(!this->mountPieceAux(actual->get(Right), actual, row, col+1))
+			{
+				return false;
+			}
         }
+
+		return true;
     }
 
-    return flag;
+	return false;
 }
