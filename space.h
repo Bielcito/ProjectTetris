@@ -10,9 +10,14 @@ class Space
 public:
     Space();
     void setBlock(Block* block);
-    bool hasBlock();
+	void setWall(bool flag);
+	bool isEmpty();
+	bool isWall();
+	Block* getBlock();
+
 private:
     Block* block;
+	bool wall;
 };
 
 #endif // SPACE_H

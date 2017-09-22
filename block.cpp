@@ -6,7 +6,13 @@ Block::Block(Piece* parentPiece)
     this->up = NULL;
     this->down = NULL;
     this->left = NULL;
-    this->right = NULL;
+	this->right = NULL;
+	this->index = 0;
+}
+
+Block::Block(Piece* parentPiece, unsigned int index) : Block(parentPiece)
+{
+	this->index = index;
 }
 
 void Block::connect(Block *block, Direction d)
@@ -50,7 +56,17 @@ Block* Block::get(Direction d)
     else
     {
         return this->right;
-    }
+	}
+}
+
+Piece* Block::getParentPiece()
+{
+	return this->parentPiece;
+}
+
+unsigned int Block::getIndex()
+{
+	return this->index;
 }
 
 void Block::rotate90()
@@ -79,7 +95,17 @@ void Block::rotate270()
     this->up = this->right;
     this->right = this->down;
     this->down = this->left;
-    this->left = aux;
+	this->left = aux;
+}
+
+Block::~Block()
+{
+	this->parentPiece = NULL;
+	this->parentSpace = NULL;
+	this->up = NULL;
+	this->down = NULL;
+	this->left = NULL;
+	this->right = NULL;
 }
 
 void Block::connectAux(Block *block, Direction d)

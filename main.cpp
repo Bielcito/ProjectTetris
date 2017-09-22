@@ -1,5 +1,6 @@
 #include "board.h"
 #include "pieces.h"
+#include "instancegenerator.h"
 #include <iostream>
 #include <string>
 using std::string;
@@ -9,14 +10,12 @@ using std::runtime_error;
 
 int main()
 {
-    Board board(20, 8);
-    Piece p(Pieces::T);
-
-	board.mountPiece(&p, 0, 1);
-	board.mountPiece(&p, 2, 1);
-	board.mountPiece(&p, 1, 3);
-
+	Board board(3, 3);
+	board.getSpace(1,1)->setWall(true);
 	cout << board.toString() << endl;
+
+	InstanceGenerator* g = new InstanceGenerator(&board);
+	cout << g->getNumWalls() << endl;
 
     return 0;
 }

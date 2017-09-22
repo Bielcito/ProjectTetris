@@ -20,7 +20,9 @@ public:
     size_t getRowSize();
     size_t getColSize();
     bool mountPiece(Piece *p, unsigned int row, unsigned int col);
-    bool setBlock(Block* b, unsigned int row, unsigned int col);
+
+	Space* getSpace(unsigned int row, unsigned int col);
+	bool hasSpace(int row, int col, Direction d);
 
 private:
     Space** board;
@@ -28,14 +30,16 @@ private:
     size_t colSize;
 
     bool mountPieceAux(Block *actual, Block* last, int row, int col);
+	bool addMemoryPoint(Block* b, unsigned int row, unsigned int col);
+	void fixBlock();
 
-    struct mountHistory{
+	struct Memory{
         Block* b;
-        unsigned int posX;
-        unsigned int posY;
+		unsigned int row;
+		unsigned int col;
     };
 
-    vector<mountHistory> history;
+	vector<Memory> memory;
 };
 
 #endif // BOARD_H

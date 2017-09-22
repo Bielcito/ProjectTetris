@@ -17,17 +17,25 @@ class Block;
 class Piece
 {
 public:
-    Piece(Pieces p);
+	enum Rotation{
+		_0, _90, _180, _270
+	};
+
+	Piece(Pieces p);
+	Piece(Pieces p, Rotation r);
     string toString();
-    Block* getPivot();
+	unsigned int getPivot();
     vector<Block*> getBlocks();
     void rotate90();
     void rotate180();
     void rotate270();
+	void reallocatePivot();
 private:
-    string toStringAux(Block *actual, Block* last, std::string r);
+	string toStringAux(Block *b);
     vector<Block*> blocks;
-    Block* pivot;
+	unsigned int pivot;
+	bool isAxisRotationEqual = false;
+	bool isAllRotationEqual = false;
 };
 
 #endif // PIECE_H

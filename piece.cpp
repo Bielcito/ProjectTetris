@@ -3,11 +3,13 @@
 Piece::Piece(Pieces P)
 {
     this->blocks = vector<Block*>(4);
-    this->pivot = blocks[0];
+
     for(int i = 0; i < 4; ++i)
     {
-        this->blocks[i] = new Block(this);
+		this->blocks[i] = new Block(this, i);
     }
+
+	this->pivot = 0;
 
     // x 1 2
     //   3
@@ -39,7 +41,8 @@ Piece::Piece(Pieces P)
     {
         this->blocks[0]->connect(blocks[1], Direction::Right);
         this->blocks[2]->connect(blocks[3], Direction::Right);
-        this->blocks[0]->connect(blocks[3], Direction::Down);
+		this->blocks[0]->connect(blocks[3], Direction::Down);
+		this->isAxisRotationEqual = true;
     }
     // x 1
     //   2 3
@@ -48,6 +51,7 @@ Piece::Piece(Pieces P)
         this->blocks[0]->connect(blocks[1], Direction::Right);
         this->blocks[2]->connect(blocks[3], Direction::Right);
         this->blocks[1]->connect(blocks[2], Direction::Down);
+		this->isAxisRotationEqual = true;
     }
     // x 1 2 3
     else if(P == Pieces::I)
@@ -55,6 +59,7 @@ Piece::Piece(Pieces P)
         this->blocks[0]->connect(blocks[1], Direction::Right);
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[2]->connect(blocks[3], Direction::Right);
+		this->isAxisRotationEqual = true;
     }
     // x 1
     // 2 3
@@ -63,17 +68,53 @@ Piece::Piece(Pieces P)
         this->blocks[0]->connect(blocks[1], Direction::Right);
         this->blocks[2]->connect(blocks[3], Direction::Right);
         this->blocks[0]->connect(blocks[2], Direction::Down);
-    }
+		this->isAllRotationEqual = true;
+	}
+}
+
+Piece::Piece(Pieces p, Piece::Rotation r) : Piece(p)
+{
+	if(r == _90)
+	{
+		if(this->isAllRotationEqual)
+		{
+			return;
+		}
+
+		this->rotate90();
+	}
+	else if(r == _180)
+	{
+		if(this->isAxisRotationEqual || this->isAllRotationEqual)
+		{
+			return;
+		}
+
+		this->rotate180();
+	}
+	else if(r == _270)
+	{
+		if(this->isAllRotationEqual)
+		{
+			return;
+		}
+
+		this->rotate270();
+	}
 }
 
 string Piece::toString()
 {
-    string result = toStringAux(this->pivot, NULL, "Pivot->");
+	string r = "";
+	for(int i = 0; i < 4; i++)
+	{
+		r += "peça["+std::to_string(i)+"]"+toStringAux(this->blocks[i]) + "\n";
+	}
 
-    return result;
+	return r;
 }
 
-Block* Piece::getPivot()
+unsigned int Piece::getPivot()
 {
     return this->pivot;
 }
@@ -89,6 +130,8 @@ void Piece::rotate90()
     {
         this->blocks[i]->rotate90();
     }
+
+	this->reallocatePivot();
 }
 
 void Piece::rotate180()
@@ -97,6 +140,8 @@ void Piece::rotate180()
     {
         this->blocks[i]->rotate180();
     }
+
+	this->reallocatePivot();
 }
 
 void Piece::rotate270()
@@ -104,36 +149,51 @@ void Piece::rotate270()
     for(int i = 0; i < 4; i++)
     {
         this->blocks[i]->rotate270();
-    }
+	}
+
+	this->reallocatePivot();
 }
 
-string Piece::toStringAux(Block* actual, Block* last, string r)
+void Piece::reallocatePivot()
 {
-    string result = "";
-    if(actual->get(Up) && actual->get(Up) != last)
-    {
-        result += r + "Up->";
-        result += toStringAux(actual->get(Up), actual, result);
-        result += "\n";
-    }
-    if(actual->get(Down) && actual->get(Down) != last)
-    {
-        result += r + "Down->";
-        result += toStringAux(actual->get(Down), actual, result);
-        result += "\n";
-    }
-    if(actual->get(Left) && actual->get(Left) != last)
-    {
-        result += r + "Left->";
-        result += toStringAux(actual->get(Left), actual, result);
-        result += "\n";
-    }
-    if(actual->get(Right) && actual->get(Right) != last)
-    {
-        result += r + "Right->";
-        result += toStringAux(actual->get(Right), actual, result);
-        result += "\n";
-    }
+	Block* aux = this->blocks[this->pivot];
+	while(true)
+	{
+		if(aux->get(Up) != NULL)
+		{
+			aux = aux->get(Up);
+		}
+		else if(aux->get(Left) != NULL)
+		{
+			aux = aux->get(Left);
+		}
+		else
+		{
+			break;
+		}
+	}
 
-    return result;
+	this->pivot = aux->getIndex();
+}
+
+string Piece::toStringAux(Block* b)
+{
+	string r = "";
+	if(b->get(Up))
+	{
+		r+="up ";
+	}
+	if(b->get(Down))
+	{
+		r+="down ";
+	}
+	if(b->get(Left))
+	{
+		r+="left ";
+	}
+	if(b->get(Right))
+	{
+		r+="right ";
+	}
+	return r;
 }

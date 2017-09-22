@@ -3,14 +3,35 @@
 Space::Space()
 {
     this->block = NULL;
+	this->wall = false;
 }
 
-void Space::setBlock(Block *block)
+void Space::setBlock(Block* block)
 {
-    this->block = block;
+	this->block = block;
 }
 
-bool Space::hasBlock()
+void Space::setWall(bool flag)
 {
-    return this->block;
+	this->wall = flag;
+}
+
+bool Space::isEmpty()
+{
+	if(this->block || this->isWall())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Space::isWall()
+{
+	return this->wall;
+}
+
+Block* Space::getBlock()
+{
+	return this->block;
 }

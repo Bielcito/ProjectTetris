@@ -7,7 +7,9 @@ SOURCES += main.cpp \
     board.cpp \
     piece.cpp \
     block.cpp \
-    space.cpp
+    space.cpp \
+    instancegenerator.cpp \
+    paintboard.cpp
 
 HEADERS += \
     board.h \
@@ -15,4 +17,6 @@ HEADERS += \
     direction.h \
     block.h \
     pieces.h \
-    space.h
+    space.h \
+    instancegenerator.h \
+    paintboard.h
