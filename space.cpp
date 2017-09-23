@@ -18,7 +18,7 @@ void Space::setWall(bool flag)
 
 bool Space::isEmpty()
 {
-	if(this->block || this->isWall())
+	if(this->block || this->wall)
 	{
 		return false;
 	}

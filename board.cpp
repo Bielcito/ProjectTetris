@@ -5,7 +5,7 @@ Board::Board(unsigned int n, unsigned int m)
     this->board = new Space*[n];
 	for(unsigned int i = 0; i < n; ++i)
     {
-        this->board[i] = new Space[m];
+		this->board[i] = new Space[m];
     }
 
 	this->memory = vector<Memory>();

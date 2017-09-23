@@ -10,12 +10,12 @@ using std::runtime_error;
 
 int main()
 {
-	Board board(3, 3);
-	board.getSpace(1,1)->setWall(true);
-	cout << board.toString() << endl;
+	/*Board board(3, 3);
+	board.getSpace(1,1)->setWall(true);​
+	cout << board.toString() << endl;*/
 
-	InstanceGenerator* g = new InstanceGenerator(&board);
-	cout << g->getNumWalls() << endl;
-
-    return 0;
+	srand(time(0));
+	InstanceGenerator* g = new InstanceGenerator(4, 4, 4);
+	cout << g->fillAll()->toString() << endl;
+	return 0;
 }
