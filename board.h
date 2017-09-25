@@ -15,7 +15,7 @@ using std::to_string;
 class Board
 {
 public:
-    Board(unsigned int n, unsigned int m);
+	Board(unsigned rows, unsigned cols);
     ~Board();
 
 	string toString();
@@ -23,41 +23,31 @@ public:
     size_t getRowSize();
     size_t getColSize();
     bool mountPiece(Piece *p, unsigned int row, unsigned int col);
+    void removePiece(unsigned row, unsigned col);
+    void removePieceAux(Block* b, Block *last);
     void insertWall(unsigned row, unsigned col);
     string memoryWallToString();
+	string memoryPieceToString();
 
 	Space* getSpace(unsigned int row, unsigned int col);
 	bool hasSpace(int row, int col, Direction d);
 
 private:
+
     Space** board;
+
+    // Armazena todas as peças que foram encaixadas
+    vector<vector<Piece*>> memoryPiece;
     size_t rowSize;
     size_t colSize;
 
-    bool mountPieceAux(Block *actual, Block* last, int row, int col);
-	bool addMemoryPoint(Block* b, unsigned int row, unsigned int col);
-	void fixBlock();
-
-	struct Memory{
-        Block* b;
-		unsigned int row;
-		unsigned int col;
-    };
-
-	vector<Memory> memory;
-
-    struct MemoryPiece{
-        Piece* p;
-        unsigned row;
-        unsigned col;
-    };
+	bool mountPieceAux(Block *actual, Block* last, int row, int col);
 
     struct MemoryWall{
         unsigned row;
         unsigned col;
     };
 
-    vector<MemoryPiece> memoryPiece;
     vector<MemoryWall> memoryWall;
 };
 

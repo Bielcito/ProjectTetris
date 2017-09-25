@@ -14,14 +14,18 @@ class InstanceSolver
 public:
     InstanceSolver(int* pieces, Board* b);
     string pieceListToString();
+	string solverHeapToString();
+	void solveInstance();
 
 private:
     int* pieces;
     Board* board;
     void fillPieceList();
+
+    // Funções da pilha:
     bool hasNextPiece();
     void getNextPiece();
-    void returnPiece();
+	void retrievePiece();
     bool isPieceListEmpty();
 
     // Armazena todas as peças:

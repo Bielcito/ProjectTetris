@@ -18,6 +18,7 @@ Piece::Piece(Pieces P)
         this->blocks[0]->connect(blocks[1], Direction::Right);
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[1]->connect(blocks[3], Direction::Down);
+		this->text = " T";
     }
     // x 1 2
     // 3
@@ -26,6 +27,7 @@ Piece::Piece(Pieces P)
         this->blocks[0]->connect(blocks[1], Direction::Right);
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[0]->connect(blocks[3], Direction::Down);
+		this->text = " L";
     }
     // x 1 2
     //     3
@@ -34,6 +36,7 @@ Piece::Piece(Pieces P)
         this->blocks[0]->connect(blocks[1], Direction::Right);
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[2]->connect(blocks[3], Direction::Down);
+		this->text = "_L";
     }
     //   x 1
     // 2 3
@@ -43,6 +46,7 @@ Piece::Piece(Pieces P)
         this->blocks[2]->connect(blocks[3], Direction::Right);
 		this->blocks[0]->connect(blocks[3], Direction::Down);
 		this->isAxisRotationEqual = true;
+		this->text = " S";
     }
     // x 1
     //   2 3
@@ -52,6 +56,7 @@ Piece::Piece(Pieces P)
         this->blocks[2]->connect(blocks[3], Direction::Right);
         this->blocks[1]->connect(blocks[2], Direction::Down);
 		this->isAxisRotationEqual = true;
+		this->text = "_S";
     }
     // x 1 2 3
     else if(P == Pieces::I)
@@ -60,6 +65,7 @@ Piece::Piece(Pieces P)
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[2]->connect(blocks[3], Direction::Right);
 		this->isAxisRotationEqual = true;
+		this->text = " I";
     }
     // x 1
     // 2 3
@@ -69,6 +75,7 @@ Piece::Piece(Pieces P)
         this->blocks[2]->connect(blocks[3], Direction::Right);
         this->blocks[0]->connect(blocks[2], Direction::Down);
 		this->isAllRotationEqual = true;
+		this->text = "O";
 	}
 }
 
@@ -90,7 +97,8 @@ Piece::Piece(Pieces p, Piece::Rotation r) : Piece(p)
 			return;
 		}
 
-		this->rotate180();
+		this->rotate90();
+		this->rotate90();
 	}
 	else if(r == _270)
 	{
@@ -99,7 +107,9 @@ Piece::Piece(Pieces p, Piece::Rotation r) : Piece(p)
 			return;
 		}
 
-		this->rotate270();
+		this->rotate90();
+		this->rotate90();
+		this->rotate90();
     }
 }
 
@@ -115,13 +125,7 @@ Piece::~Piece()
 
 string Piece::toString()
 {
-	string r = "";
-	for(int i = 0; i < 4; i++)
-	{
-		r += "peça["+std::to_string(i)+"]"+toStringAux(this->blocks[i]) + "\n";
-	}
-
-	return r;
+	return this->text + to_string(this->rotationState);
 }
 
 unsigned int Piece::getPivot()
@@ -234,7 +238,33 @@ bool Piece::hasNextRotation()
         }
     }
 
-    return true;
+	return true;
+}
+
+void Piece::clearRotation()
+{
+	if(this->rotationState == 0)
+	{
+		return;
+	}
+	else if(this->rotationState == 1)
+	{
+		this->rotate90();
+		this->rotate90();
+		this->rotate90();
+		this->rotationState = 0;
+	}
+	else if(this->rotationState == 2)
+	{
+		this->rotate90();
+		this->rotate90();
+		this->rotationState = 0;
+	}
+	else if(this->rotationState == 3)
+	{
+		this->rotate90();
+		this->rotationState = 0;
+	}
 }
 
 string Piece::toStringAux(Block* b)

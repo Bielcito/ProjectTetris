@@ -1,40 +1,35 @@
 #include "board.h"
 
-Board::Board(unsigned int n, unsigned int m)
+Board::Board(unsigned rows, unsigned cols)
 {
-    this->board = new Space*[n];
-	for(unsigned int i = 0; i < n; ++i)
+	this->board = new Space*[rows];
+	for(unsigned int i = 0; i < rows; ++i)
     {
-		this->board[i] = new Space[m];
+		this->board[i] = new Space[cols];
     }
 
-	this->memory = vector<Memory>();
+	this->memoryPiece = vector< vector<Piece*> >(rows, vector<Piece*>(cols));
 
-    this->rowSize = n;
-    this->colSize = m;
+	this->rowSize = rows;
+	this->colSize = cols;
 }
 
 Board::~Board()
 {
-    for(unsigned i = 0; i < this->rowSize; i++)
+	for(unsigned i = 0; i < this->rowSize; ++i)
     {
         delete[] this->board[i];
     }
 
     delete[] this->board;
 
-    for(unsigned i = 0; i < this->memoryPiece.size(); ++i)
-    {
-        delete this->memoryPiece[i].p;
-    }
-
-    for(unsigned i = 0; i < this->memory.size(); ++i)
-    {
-        delete this->memory[i].b;
-    }
-
-    this->memoryPiece.clear();
-    this->memory.clear();
+	for(unsigned i = 0; i < this->memoryPiece.size(); ++i)
+	{
+		for(unsigned j = 0; j < this->memoryPiece[i].size(); j++)
+		{
+			delete this->memoryPiece[i][j];
+		}
+	}
 }
 
 string Board::toString()
@@ -78,21 +73,59 @@ size_t Board::getColSize()
 
 bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
 {
+	this->memoryPiece[row][col] = p;
+
+    // Caso a peça tenha sido encaixada
 	if(mountPieceAux(p->getBlocks()[p->getPivot()], NULL, row, col))
 	{
-        MemoryPiece aux = {
-            p, row, col
-        };
-
-        this->memoryPiece.push_back(aux);
-		this->fixBlock();
 		return true;
 	}
 	else
 	{
-		this->memory.clear();
+        removePiece(row, col);
 		return false;
     }
+}
+
+void Board::removePiece(unsigned row, unsigned col)
+{
+	Block* aux = this->getSpace(row, col)->getBlock();
+	if(!aux)
+	{
+		return;
+	}
+
+	if(this->memoryPiece[row][col])
+	{
+		this->removePieceAux(aux, aux);
+		delete this->memoryPiece[row][col];
+		this->memoryPiece[row][col] = NULL;
+	}
+}
+
+void Board::removePieceAux(Block* actual, Block* last)
+{
+    if(actual->get(Up) && actual->get(Up) != last)
+    {
+        removePieceAux(actual->get(Up), actual);
+    }
+    if(actual->get(Down) && actual->get(Down) != last)
+    {
+        removePieceAux(actual->get(Down), actual);
+    }
+    if(actual->get(Left) && actual->get(Left) != last)
+    {
+        removePieceAux(actual->get(Left), actual);
+    }
+    if(actual->get(Right) && actual->get(Right) != last)
+    {
+        removePieceAux(actual->get(Right), actual);
+    }
+
+	if(actual->getParentSpace())
+	{
+		actual->getParentSpace()->deleteBlock();
+	}
 }
 
 void Board::insertWall(unsigned row, unsigned col)
@@ -118,7 +151,31 @@ string Board::memoryWallToString()
         aux += to_string(this->memoryWall[i].row) + " " + to_string(this->memoryWall[i].col) + "\n";
     }
 
-    return aux;
+	return aux;
+}
+
+string Board::memoryPieceToString()
+{
+	string result = "";
+
+	for(unsigned i = 0; i < this->rowSize; ++i)
+	{
+		for(unsigned j = 0; j < this->colSize; ++j)
+		{
+			if(this->memoryPiece[i][j])
+			{
+				result += this->memoryPiece[i][j]->toString() + " ";
+			}
+			else
+			{
+				result += "  0 ";
+			}
+		}
+
+		result += "\n";
+	}
+
+	return result;
 }
 
 Space* Board::getSpace(unsigned int row, unsigned int col)
@@ -160,48 +217,16 @@ bool Board::hasSpace(int row, int col, Direction d)
 	return false;
 }
 
-bool Board::addMemoryPoint(Block* b, unsigned int row, unsigned int col)
-{
-	if(b == NULL)
-	{
-		return false;
-	}
-
-	if(row >= this->rowSize || col >= this->colSize)
-    {
-		return false;
-    }
-
-	if(!this->board[row][col].isEmpty())
-	{
-		return false;
-	}
-
-	Memory aux{b, row, col};
-	this->memory.push_back(aux);
-
-	return true;
-}
-
-void Board::fixBlock()
-{
-	for(unsigned int i = 0; i < this->memory.size(); ++i)
-	{
-		this->board[this->memory[i].row][this->memory[i].col].setBlock(this->memory[i].b);
-	}
-}
-
 bool Board::mountPieceAux(Block* actual, Block* last, int row, int col)
 {
+	// Seta o bloco:
+	this->board[row][col].setBlock(actual);
+	actual->setParentSpace(&this->board[row][col]);
+
     // Testa os parâmetros, retorna falso se menor que zero
     if(row < 0 || col < 0)
     {
         return false;
-    }
-
-	if(!this->addMemoryPoint(actual, row, col))
-    {
-		return false;
     }
 
 	if(actual->get(Up) && actual->get(Up) != last)

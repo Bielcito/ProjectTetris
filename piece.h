@@ -11,6 +11,7 @@ using std::string;
 using std::runtime_error;
 using std::cout;
 using std::endl;
+using std::to_string;
 
 class Block;
 
@@ -32,7 +33,9 @@ public:
     void rotate270();
 	void reallocatePivot();
     bool hasNextRotation();
+	void clearRotation();
 private:
+	std::string text;
 	string toStringAux(Block *b);
     vector<Block*> blocks;
 	unsigned int pivot;

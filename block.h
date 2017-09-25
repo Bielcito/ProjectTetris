@@ -16,6 +16,8 @@ public:
     void connect(Block* block, Direction d);
     Block* get(Direction d);
 	Piece* getParentPiece();
+	Space* getParentSpace();
+	void setParentSpace(Space* s);
 	unsigned int getIndex();
 
     void rotate90();

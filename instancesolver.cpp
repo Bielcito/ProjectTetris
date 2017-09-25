@@ -34,10 +34,10 @@ bool InstanceSolver::hasNextPiece()
 
 void InstanceSolver::getNextPiece()
 {
-    // Tira a peça da lista:
+	// Salvo a peça que está na lista:
     PieceList* pl = this->pieceList[0];
 
-    // Apaga a peça da lista:
+	// Apago a peça da lista:
     this->pieceList.erase(this->pieceList.begin());
 
     // Coloca no solver:
@@ -66,7 +66,24 @@ bool InstanceSolver::isPieceListEmpty()
         return true;
     }
 
-    return false;
+	return false;
+}
+
+string InstanceSolver::solverHeapToString()
+{
+	string result = "";
+	for(unsigned i = 0; i < solverHeap.size(); i++)
+	{
+		result += solverHeap[i]->pl->p->toString() + "\n";
+	}
+
+	return result;
+}
+
+void InstanceSolver::solveInstance()
+{
+	//Inicializa o Solver Heap com seu primeiro elemento:
+	this->getNextPiece();
 }
 
 void InstanceSolver::insertToPieceList(PieceList* pl)

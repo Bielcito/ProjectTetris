@@ -61,7 +61,17 @@ Block* Block::get(Direction d)
 
 Piece* Block::getParentPiece()
 {
-	return this->parentPiece;
+    return this->parentPiece;
+}
+
+Space* Block::getParentSpace()
+{
+	return this->parentSpace;
+}
+
+void Block::setParentSpace(Space* s)
+{
+	this->parentSpace = s;
 }
 
 unsigned int Block::getIndex()

@@ -13,6 +13,7 @@ public:
 	void setWall(bool flag);
 	bool isEmpty();
 	bool isWall();
+	void deleteBlock();
 	Block* getBlock();
 
 private:

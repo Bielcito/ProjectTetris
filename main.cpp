@@ -28,13 +28,37 @@ int main()
 //        }
 //    }
 
-    InstanceReader* g = new InstanceReader("10x10/instance_0.txt");
-    cout << g->piecesToString() << endl;
-    int* pieces = g->getPieces();
-    Board* b = g->getBoard();
+	InstanceReader* g = new InstanceReader("10x10/instance_0.txt");
+	cout << g->piecesToString() << endl;
+	int* pieces = g->getPieces();
+	Board* b = g->getBoard();
 
-    InstanceSolver* h = new InstanceSolver(pieces, b);
-    cout << h->pieceListToString() << endl;
+	InstanceSolver* h = new InstanceSolver(pieces, b);
+	h->solveInstance();
+
+//	for(unsigned i = 0; i < 999999999; ++i)
+//	{
+//		Board* a = new Board(3, 3);
+
+//		Piece* p = new Piece(Pieces::T);
+//		p->rotate90();
+//		p->rotate90();
+//		p->rotate90();
+//		a->mountPiece(p, 0, 0);
+
+//		Piece* p2 = new Piece(Pieces::_L);
+//		p2->rotate90();
+//		a->mountPiece(p2, 0, 2);
+
+//		cout << a->toString() << endl;
+
+//		a->removePiece(0, 0);
+
+//		cout << a->toString() << endl;
+
+//		delete a;
+//		usleep(1);
+//	}
 
 	return 0;
 

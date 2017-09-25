@@ -31,6 +31,14 @@ bool Space::isWall()
 	return this->wall;
 }
 
+void Space::deleteBlock()
+{
+	if(this->block)
+	{
+		this->block = NULL;
+	}
+}
+
 Block* Space::getBlock()
 {
 	return this->block;
