@@ -29,7 +29,6 @@ int main()
 //    }
 
 	InstanceReader* g = new InstanceReader("10x10/instance_0.txt");
-	cout << g->piecesToString() << endl;
 	int* pieces = g->getPieces();
 	Board* b = g->getBoard();
 

@@ -45,10 +45,10 @@ void InstanceSolver::getNextPiece()
     sh->pl = pl;
     sh->state = 0;
 
-    this->solverHeap.push_back(sh);
+	this->solverHeap.push_back(sh);
 }
 
-void InstanceSolver::returnPiece()
+void InstanceSolver::retrievePiece()
 {
     // Retira a última peça do solver:
     PieceList* pl = this->solverHeap.back()->pl;
