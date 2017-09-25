@@ -13,7 +13,7 @@ void Space::setBlock(Block* block)
 
 void Space::setWall(bool flag)
 {
-	this->wall = flag;
+    this->wall = flag;
 }
 
 bool Space::isEmpty()

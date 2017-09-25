@@ -18,6 +18,7 @@ public:
 	};
 
 	PaintBoard(unsigned row, unsigned col);
+    ~PaintBoard();
 	void paint(int type, int number, unsigned int row, unsigned int col);
 	bool isPainted(unsigned int row, unsigned int col);
 	int* getNumbers();

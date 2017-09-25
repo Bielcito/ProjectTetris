@@ -100,7 +100,17 @@ Piece::Piece(Pieces p, Piece::Rotation r) : Piece(p)
 		}
 
 		this->rotate270();
-	}
+    }
+}
+
+Piece::~Piece()
+{
+    for(unsigned i = 0; i < this->blocks.size(); ++i)
+    {
+        delete this->blocks[i];
+    }
+
+    this->blocks.clear();
 }
 
 string Piece::toString()
@@ -126,6 +136,33 @@ vector<Block*> Piece::getBlocks()
 
 void Piece::rotate90()
 {
+    if(isAllRotationEqual)
+    {
+        rotationState = 0;
+    }
+    else if(isAxisRotationEqual)
+    {
+        if(rotationState < 1)
+        {
+            ++rotationState;
+        }
+        else
+        {
+            rotationState = 0;
+        }
+    }
+    else
+    {
+        if(rotationState < 3)
+        {
+            ++rotationState;
+        }
+        else
+        {
+            rotationState = 0;
+        }
+    }
+
     for(int i = 0; i < 4; i++)
     {
         this->blocks[i]->rotate90();
@@ -173,7 +210,31 @@ void Piece::reallocatePivot()
 		}
 	}
 
-	this->pivot = aux->getIndex();
+    this->pivot = aux->getIndex();
+}
+
+bool Piece::hasNextRotation()
+{
+    if(isAllRotationEqual)
+    {
+        return false;
+    }
+    else if(isAxisRotationEqual)
+    {
+        if(rotationState == 1)
+        {
+            return false;
+        }
+    }
+    else
+    {
+        if(rotationState == 3)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 string Piece::toStringAux(Block* b)

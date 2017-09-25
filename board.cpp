@@ -11,7 +11,30 @@ Board::Board(unsigned int n, unsigned int m)
 	this->memory = vector<Memory>();
 
     this->rowSize = n;
-	this->colSize = m;
+    this->colSize = m;
+}
+
+Board::~Board()
+{
+    for(unsigned i = 0; i < this->rowSize; i++)
+    {
+        delete[] this->board[i];
+    }
+
+    delete[] this->board;
+
+    for(unsigned i = 0; i < this->memoryPiece.size(); ++i)
+    {
+        delete this->memoryPiece[i].p;
+    }
+
+    for(unsigned i = 0; i < this->memory.size(); ++i)
+    {
+        delete this->memory[i].b;
+    }
+
+    this->memoryPiece.clear();
+    this->memory.clear();
 }
 
 string Board::toString()
@@ -57,6 +80,11 @@ bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
 {
 	if(mountPieceAux(p->getBlocks()[p->getPivot()], NULL, row, col))
 	{
+        MemoryPiece aux = {
+            p, row, col
+        };
+
+        this->memoryPiece.push_back(aux);
 		this->fixBlock();
 		return true;
 	}
@@ -64,7 +92,33 @@ bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
 	{
 		this->memory.clear();
 		return false;
-	}
+    }
+}
+
+void Board::insertWall(unsigned row, unsigned col)
+{
+    if(this->board[row][col].isEmpty())
+    {
+        this->board[row][col].setWall(true);
+
+        MemoryWall aux = {
+            row, col
+        };
+
+        this->memoryWall.push_back(aux);
+    }
+}
+
+string Board::memoryWallToString()
+{
+    string aux = "";
+
+    for(unsigned i = 0; i < this->memoryWall.size(); ++i)
+    {
+        aux += to_string(this->memoryWall[i].row) + " " + to_string(this->memoryWall[i].col) + "\n";
+    }
+
+    return aux;
 }
 
 Space* Board::getSpace(unsigned int row, unsigned int col)
@@ -147,7 +201,6 @@ bool Board::mountPieceAux(Block* actual, Block* last, int row, int col)
 
 	if(!this->addMemoryPoint(actual, row, col))
     {
-		cout << "Erro ao setar bloco" << endl;
 		return false;
     }
 

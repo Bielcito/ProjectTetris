@@ -9,7 +9,9 @@ SOURCES += main.cpp \
     block.cpp \
     space.cpp \
     instancegenerator.cpp \
-    paintboard.cpp
+    paintboard.cpp \
+    instancesolver.cpp \
+    instancereader.cpp
 
 HEADERS += \
     board.h \
@@ -19,4 +21,6 @@ HEADERS += \
     pieces.h \
     space.h \
     instancegenerator.h \
-    paintboard.h
+    paintboard.h \
+    instancesolver.h \
+    instancereader.h

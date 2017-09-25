@@ -23,6 +23,7 @@ public:
 
 	Piece(Pieces p);
 	Piece(Pieces p, Rotation r);
+    ~Piece();
     string toString();
 	unsigned int getPivot();
     vector<Block*> getBlocks();
@@ -30,12 +31,14 @@ public:
     void rotate180();
     void rotate270();
 	void reallocatePivot();
+    bool hasNextRotation();
 private:
 	string toStringAux(Block *b);
     vector<Block*> blocks;
 	unsigned int pivot;
 	bool isAxisRotationEqual = false;
 	bool isAllRotationEqual = false;
+    unsigned rotationState = 0;
 };
 
 #endif // PIECE_H

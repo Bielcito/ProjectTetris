@@ -14,7 +14,17 @@ PaintBoard::PaintBoard(unsigned row, unsigned col)
 	}
 
 	this->row = row;
-	this->col = col;
+    this->col = col;
+}
+
+PaintBoard::~PaintBoard()
+{
+    for(unsigned i = 0; i < this->row; ++i)
+    {
+        delete[] this->board[i];
+    }
+
+    delete[] this->board;
 }
 
 void PaintBoard::paint(int type, int number, unsigned int row, unsigned int col)
