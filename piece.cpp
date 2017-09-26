@@ -75,7 +75,7 @@ Piece::Piece(Pieces P)
         this->blocks[2]->connect(blocks[3], Direction::Right);
         this->blocks[0]->connect(blocks[2], Direction::Down);
 		this->isAllRotationEqual = true;
-		this->text = "O";
+		this->text = " O";
 	}
 }
 

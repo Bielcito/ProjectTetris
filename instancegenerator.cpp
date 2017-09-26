@@ -3,7 +3,6 @@
 InstanceGenerator::InstanceGenerator(unsigned int rows, unsigned int cols, unsigned int numWalls)
 {
     this->board = new Board(rows, cols);
-    this->p = new PaintBoard(rows, cols);
 	for(unsigned int i = 0; i < numWalls; ++i)
 	{
 		this->addWall();
@@ -13,34 +12,11 @@ InstanceGenerator::InstanceGenerator(unsigned int rows, unsigned int cols, unsig
 InstanceGenerator::~InstanceGenerator()
 {
     delete this->board;
-    delete this->p;
 }
 
 InstanceGenerator::InstanceGenerator(Board* b)
 {
     this->board = b;
-    this->p = new PaintBoard(b->getRowSize(), b->getColSize());
-}
-
-PaintBoard* InstanceGenerator::fillAll()
-{
-    PaintBoard* aux = new PaintBoard(this->board->getRowSize(), this->board->getColSize());
-
-	// Pega o tipo da posição:
-	for(unsigned int i = 0; i < this->board->getRowSize(); ++i)
-	{
-		for(unsigned int j = 0; j < this->board->getColSize(); ++j)
-		{
-			int type = this->getBoardType(i, j);
-            int number = aux->getNumbers()[type];
-            if(this->fillAux(aux, type, number, i, j))
-			{
-				++aux->getNumbers()[type];
-			}
-		}
-    }
-
-    return aux;
 }
 
 void InstanceGenerator::addWall()
@@ -100,6 +76,7 @@ void InstanceGenerator::generateInstance()
     int row = this->board->getRowSize();
     int col = this->board->getColSize();
 	this->generateInstanceAux(row, col);
+
 	this->fillWithWalls();
 }
 
@@ -120,6 +97,7 @@ void InstanceGenerator::saveOnMemory(unsigned piece, unsigned rotation, unsigned
     {
         piece, rotation, row, col
     };
+
     this->memory.push_back(aux);
 }
 
@@ -174,9 +152,24 @@ bool InstanceGenerator::placeRandomPieceFromCollection(unsigned int row, unsigne
 
     for(int i = 0; i < 7; ++i)
     {
-		for(int j = 0; j < 3; j++)
+		for(int j = 0; j < 4; j++)
 		{
 			Piece* p = new Piece((Pieces)options[i]);
+			if(j == 1)
+			{
+				p->rotate90();
+			}
+			else if(j == 2)
+			{
+				p->rotate90();
+				p->rotate90();
+			}
+			else if(j == 3)
+			{
+				p->rotate90();
+				p->rotate90();
+				p->rotate90();
+			}
 
 			if(this->board->mountPiece(p, row, col))
 			{
@@ -187,45 +180,6 @@ bool InstanceGenerator::placeRandomPieceFromCollection(unsigned int row, unsigne
     }
 
     return false;
-}
-
-bool InstanceGenerator::fillAux(PaintBoard* aux, int lastType, int number, unsigned int row, unsigned int col)
-{
-	// Verifica se já foi pintado:
-	if(aux->isPainted(row, col))
-	{
-		return false;
-	}
-
-	// Verifica se o tipo do atual é o mesmo do anterior, se sim, pinta.
-	if(this->getBoardType(row, col) == lastType)
-	{
-		aux->paint(lastType, number, row, col);
-	}
-	else
-	{
-		return false;
-	}
-
-	// Chama recursivamente para os próximo:
-	if(this->board->hasSpace(row, col, Up))
-	{
-		this->fillAux(aux, lastType, number, row-1, col);
-	}
-	if(this->board->hasSpace(row, col, Down))
-	{
-		this->fillAux(aux, lastType, number, row+1, col);
-	}
-	if(this->board->hasSpace(row, col, Left))
-	{
-		this->fillAux(aux, lastType, number, row, col-1);
-	}
-	if(this->board->hasSpace(row, col, Right))
-	{
-		this->fillAux(aux, lastType, number, row, col+1);
-	}
-
-    return true;
 }
 
 void InstanceGenerator::fillWithWalls()

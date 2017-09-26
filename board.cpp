@@ -55,6 +55,7 @@ string Board::toString()
 				}
 			}
 		}
+
 		result += "\n";
 	}
 
@@ -232,9 +233,14 @@ bool Board::mountPieceAux(Block* actual, Block* last, int row, int col)
 		return false;
 	}
 
+	if(!this->board[row][col].isEmpty())
+	{
+		return false;
+	}
+
 	// Seta o bloco:
-	this->board[row][col].setBlock(actual);
-	actual->setParentSpace(&this->board[row][col]);
+	this->getSpace(row, col)->setBlock(actual);
+	actual->setParentSpace(this->getSpace(row, col));
 
 	if(actual->get(Up) && actual->get(Up) != last)
 	{

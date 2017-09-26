@@ -32,7 +32,7 @@ public:
     void instanceToFile(string file);
 
 private:
-    PaintBoard* p;
+
     struct Memory
     {
         unsigned piece;
@@ -42,12 +42,11 @@ private:
     };
 
     vector<Memory> memory;
+	Board* board;
 
     bool placeRandomPiece(unsigned int row, unsigned int col);
     bool placeRandomPieceFromCollection(unsigned int row, unsigned int col);
-	bool fillAux(PaintBoard* aux, int lastType, int number, unsigned int row, unsigned int col);
     void fillWithWalls();
-	Board* board;
 };
 
 #endif // INSTANCEGENERATOR_H

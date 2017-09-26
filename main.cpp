@@ -14,12 +14,13 @@ using std::runtime_error;
 
 int main()
 {
-	//srand(time(0));
+	srand(time(0));
 
 	// Gerador de instâncias funcionando:
-	for(unsigned i = 10; i <= 100; ++i)
+
+	for(unsigned i = 4; i <= 4; ++i)
 	{
-		for(unsigned j = 0; j < 1000; ++j)
+		for(unsigned j = 0; j < 1; ++j)
 		{
 			string a = to_string(i);
 			string dir = a+"x"+a;
@@ -31,11 +32,11 @@ int main()
 		}
 	}
 
-//	string path = "instances/10x10/instance_2.txt";
-//	InstanceReader* g = new InstanceReader(path);
-//	int* pieces = g->getPieces();
-//	Board* b = g->getBoard();
-//	cout << b->toString() << endl;
+	string path = "4x4/instance_0.txt";
+	InstanceReader* g = new InstanceReader(path);
+	int* pieces = g->getPieces();
+	Board* b = g->getBoard();
+	cout << b->toString() << endl;
 
 //	InstanceSolver* h = new InstanceSolver(pieces, b);
 //	h->solveInstance();
