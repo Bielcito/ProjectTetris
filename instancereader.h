@@ -24,7 +24,7 @@ public:
 
 private:
     Board* board;
-    int pieces[7];
+	int* pieces;
 };
 
 #endif // INSTANCEREADER_H

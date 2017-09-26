@@ -22,12 +22,13 @@ public:
 
     size_t getRowSize();
     size_t getColSize();
-    bool mountPiece(Piece *p, unsigned int row, unsigned int col);
-	void removePiece(unsigned row, unsigned col);
+	bool mountPiece(Piece *p, unsigned int row, unsigned int col, bool deletePiece = true);
+	void removePiece(unsigned row, unsigned col, bool deletePiece);
     void removePieceAux(Block* b, Block *last);
     void insertWall(unsigned row, unsigned col);
     string memoryWallToString();
 	string memoryPieceToString();
+	bool hasPiece(unsigned row, unsigned col);
 
 	Space* getSpace(unsigned int row, unsigned int col);
 	bool hasSpace(int row, int col, Direction d);

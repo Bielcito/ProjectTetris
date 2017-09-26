@@ -76,7 +76,6 @@ void InstanceGenerator::generateInstance()
     int row = this->board->getRowSize();
     int col = this->board->getColSize();
 	this->generateInstanceAux(row, col);
-
 	this->fillWithWalls();
 }
 

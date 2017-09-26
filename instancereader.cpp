@@ -2,6 +2,8 @@
 
 InstanceReader::InstanceReader(string path)
 {
+	this->pieces = new int[7];
+
 	ifstream file(path);
 
 	if(!file.is_open())
@@ -71,19 +73,7 @@ void InstanceReader::parseLine(string line, unsigned &row, unsigned &col)
 
 void InstanceReader::parseLineFirst(string line, unsigned &num)
 {
-    string aux;
-    for(unsigned i = 0; i < line.size(); ++i)
-    {
-		if(line[i] != ' ' && line[i] != '\n')
-        {
-            aux += line[i];
-        }
-        else
-        {
-            num = stoi(aux);
-            return;
-		}
-    }
+	num = stoi(line);
 }
 
 string InstanceReader::piecesToString()

@@ -22,33 +22,43 @@ private:
     Board* board;
     void fillPieceList();
 
+	// Armazena as peças de forma que possam ser inseridas de forma ordenada
+	struct PieceList
+	{
+		unsigned value;
+		Piece* p;
+	};
+
+	// Armazena a pilha que está resolvendo a instância
+	struct SolverHeap
+	{
+		PieceList* pl;
+		unsigned state;
+	};
+
     // Funções da pilha:
     bool hasNextPiece();
     void getNextPiece();
 	void retrievePiece();
     bool isPieceListEmpty();
+	void insertToPieceList(PieceList* pl);
+	void incrementState();
+
+	// Funções do board:
+	void nextPosition();
+	void lastPosition();
+	bool checkIfPieceFitsOnBoard();
+	bool hasNextRotation();
+	void rotate();
+	string lastPieceToString();
 
     // Armazena todas as peças:
     vector<int> queue;
 
-    // Armazena as peças de forma que possam ser inseridas de forma ordenada
-    struct PieceList
-    {
-        unsigned value;
-        Piece* p;
-    };
-
-    // Armazena a pilha que está resolvendo a instância
-    struct SolverHeap
-    {
-        PieceList* pl;
-        unsigned state;
-    };
-
-    void insertToPieceList(PieceList* pl);
-
     vector<PieceList*> pieceList;
     vector<SolverHeap*> solverHeap;
+	unsigned row = 0;
+	unsigned col = 0;
 };
 
 #endif // INSTANCESOLVER_H

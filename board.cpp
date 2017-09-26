@@ -72,7 +72,7 @@ size_t Board::getColSize()
     return this->colSize;
 }
 
-bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
+bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col, bool deletePiece)
 {
 	this->memoryPiece[row][col] = p;
 
@@ -87,12 +87,12 @@ bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
 	else
 	{
 		// Caso não seja, deleta a peça:
-		removePiece(row, col);
+		removePiece(row, col, deletePiece);
 		return false;
 	}
 }
 
-void Board::removePiece(unsigned row, unsigned col)
+void Board::removePiece(unsigned row, unsigned col, bool deletePiece)
 {
 	// Verifica se há uma peça encaixada na posição row/col:
 	Piece* p = this->memoryPiece[row][col];
@@ -107,7 +107,12 @@ void Board::removePiece(unsigned row, unsigned col)
 
 	// Remove peças adjacentes:
 	this->removePieceAux(b, NULL);
-	delete p;
+
+	if(deletePiece)
+	{
+		delete p;
+	}
+
 	this->memoryPiece[row][col] = NULL;
 }
 
@@ -184,6 +189,16 @@ string Board::memoryPieceToString()
 	}
 
 	return result;
+}
+
+bool Board::hasPiece(unsigned row, unsigned col)
+{
+	if(this->memoryPiece[row][col])
+	{
+		return true;
+	}
+
+	return false;
 }
 
 Space* Board::getSpace(unsigned int row, unsigned int col)

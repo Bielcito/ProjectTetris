@@ -18,28 +18,27 @@ int main()
 
 	// Gerador de instâncias funcionando:
 
-	for(unsigned i = 4; i <= 4; ++i)
-	{
-		for(unsigned j = 0; j < 1; ++j)
-		{
-			string a = to_string(i);
-			string dir = a+"x"+a;
-			mkdir(dir.c_str(), 0755);
-			InstanceGenerator* g = new InstanceGenerator(i, i, InstanceGenerator::random_at_most(i));
-			g->generateInstance();
-			g->instanceToFile(a+"x"+a+"/instance_"+to_string(j)+".txt");
-			delete g;
-		}
-	}
+//	for(unsigned i = 10; i <= 100; ++i)
+//	{
+//		for(unsigned j = 0; j < 999; ++j)
+//		{
+//			string a = to_string(i);
+//			string dir = a+"x"+a;
+//			mkdir(dir.c_str(), 0755);
+//			InstanceGenerator* IG = new InstanceGenerator(i, i, InstanceGenerator::random_at_most(i));
+//			IG->generateInstance();
+//			IG->instanceToFile(a+"x"+a+"/instance_"+to_string(j)+".txt");
+//			delete IG;
+//		}
+//	}
 
-	string path = "4x4/instance_0.txt";
-	InstanceReader* g = new InstanceReader(path);
-	int* pieces = g->getPieces();
-	Board* b = g->getBoard();
-	cout << b->toString() << endl;
+	string path = "10x10/instance_0.txt";
+	InstanceReader* IR = new InstanceReader(path);
+	int* pieces = IR->getPieces();
+	Board* b = IR->getBoard();
 
-//	InstanceSolver* h = new InstanceSolver(pieces, b);
-//	h->solveInstance();
+	InstanceSolver* IS = new InstanceSolver(pieces, b);
+	IS->solveInstance();
 
 //	for(unsigned i = 0; i < 999999999; ++i)
 //	{
