@@ -22,38 +22,61 @@ string InstanceSolver::pieceListToString()
 
 bool InstanceSolver::hasNextPiece()
 {
-	if(this->solverHeap.back()->state >= this->pieceList.size())
+	if(this->solverHeap.back()->state >= this->pieceList.size()-1)
     {
         return false;
     }
     else
     {
         return true;
-    }
+	}
 }
 
+/**
+ * @brief InstanceSolver::getNextPiece
+ * Pega a próxima peça a ser inserida no solveHeap
+ */
 void InstanceSolver::getNextPiece()
 {	
+	unsigned state;
+
+	// Checa se o solveHeap está vazio:
+	if(this->solverHeap.empty())
+	{
+		state = this->mainState;
+	}
+	else
+	{
+		state = this->solverHeap.back()->state;
+	}
+
 	// Salvo a peça que está na lista:
-    PieceList* pl = this->pieceList[0];
+	PieceList* pl = this->pieceList[state];
 
 	// Apago a peça da lista:
-    this->pieceList.erase(this->pieceList.begin());
+	this->pieceList.erase(this->pieceList.begin()+state);
 
-    // Coloca no solver:
-    SolverHeap* sh = new SolverHeap();
-    sh->pl = pl;
-    sh->state = 0;
+	// Coloca no solver:
+	SolverHeap* sh = new SolverHeap();
+	sh->pl = pl;
+	sh->state = 0;
 
 	this->solverHeap.push_back(sh);
 }
 
 void InstanceSolver::retrievePiece()
 {
-    // Retira a última peça do solver:
+	// Retira a peça do tabuleiro:
+	if(this->board->hasPiece(row, col))
+	{
+		this->board->removePiece(row, col, false);
+	}
+
+	// Guarda a última peça do solver:
     PieceList* pl = this->solverHeap.back()->pl;
 
-    delete this->solverHeap.back();
+	//delete this->solverHeap.back();
+	this->solverHeap.pop_back();
 
     // Insere em sua respectiva posição na lista:
     this->insertToPieceList(pl);
@@ -74,7 +97,7 @@ string InstanceSolver::solverHeapToString()
 	string result = "";
 	for(unsigned i = 0; i < solverHeap.size(); i++)
 	{
-		result += solverHeap[i]->pl->p->toString() + "\n";
+		result += to_string(solverHeap[i]->pl->value) + " " + solverHeap[i]->pl->p->toString() + " " + to_string(solverHeap[i]->state) + "\n";
 	}
 
 	return result;
@@ -82,101 +105,70 @@ string InstanceSolver::solverHeapToString()
 
 void InstanceSolver::solveInstance()
 {
-	// Inicializa a primeira peça:
-	this->getNextPiece();
+	insertPiece();
+	stop();
 
-	// Verifica se ela pode ser encaixada:
-	if(this->checkIfPieceFitsOnBoard())
-	{
-		// Pega a próxima posição válida:
-		this->nextPosition();
+	insertPiece();
+	stop();
 
-		// Chamo a próxima peça:
-		this->getNextPiece();
-		// Verifico se ela pode ser encaixada:
-		if(this->checkIfPieceFitsOnBoard())
-		{
-			this->nextPosition();
+	insertPiece();
+	stop();
 
-			this->getNextPiece();
-			if(this->checkIfPieceFitsOnBoard())
-			{
-				this->nextPosition();
-				this->getNextPiece();
-				if(this->checkIfPieceFitsOnBoard())
-				{
-					this->nextPosition();
-					this->getNextPiece();
-					if(this->checkIfPieceFitsOnBoard())
-					{
+	insertPiece();
+	stop();
 
-					}
-					else
-					{
-						cout << "Pôde não sô de quatro é mais gostoso :)" << endl;
-						cout << lastPieceToString() << endl;
-						cout << row << " " << col << endl;
-						cout << this->board->toString() << endl;
+	insertPiece();
+	stop();
 
-						this->rotate();
-						this->rotate();
-						this->rotate();
+	insertPiece();
+	stop();
 
-						if(hasNextRotation())
-						{
-							this->rotate();
-						}
-						else
-						{
-							cout << "Cabou as rotação maluco" << endl;
-						}
+	insertPiece();
+	stop();
 
-						if(this->checkIfPieceFitsOnBoard())
-						{
+	insertPiece();
+	stop();
 
-						}
-						else
-						{
-							cout << "Rotacionando tbm n deu certo, rapaz..." << endl;
-						}
-					}
-				}
-				else
-				{
-					cout << "Pôde não sô TRÊIS :(" << endl;
-				}
-			}
-			else
-			{
-				cout << "Pôde não sô 2 :(" << endl;
-			}
-		}
-		else
-		{
-			cout << "Pôde não sô :(" << endl;
-		}
-	}
-	else
-	{
-		this->rotate();
-	}
+	insertPiece();
+	stop();
 
+	insertPiece();
+	stop();
+}
+
+void InstanceSolver::stop()
+{
+	cout << endl;
+	cout << this->board->toString() << endl;
+	cout << this->pieceListToString() << endl;
+	cout << this->solverHeapToString() << endl;
+	cout << "row: " << row << " col: " << col << endl;
+	std::cin.get();
+	system("clear");
 }
 
 void InstanceSolver::insertToPieceList(PieceList* pl)
 {
     for(unsigned i = 0; i < this->pieceList.size(); ++i)
     {
-        if(pl->value < this->pieceList[i]->value)
+		if(pl->value < this->pieceList[i]->value || i == this->pieceList.size()-1)
         {
-            this->pieceList.insert(this->pieceList.begin(), pl);
+			this->pieceList.insert(this->pieceList.begin()+i, pl);
+			break;
         }
 	}
 }
 
 void InstanceSolver::incrementState()
 {
-	++this->solverHeap.back()->state;
+	if(this->solverHeap.empty())
+	{
+		++this->mainState;
+	}
+	else
+	{
+		++this->solverHeap.back()->state;
+	}
 }
 
 void InstanceSolver::nextPosition()
@@ -199,12 +191,19 @@ void InstanceSolver::nextPosition()
 
 void InstanceSolver::lastPosition()
 {
+	if(solverHeap.size() == 0)
+	{
+		return;
+	}
+
 	for(int i = this->row; i >= 0; --i)
 	{
 		for(int j = this->col-1; j >= 0; --j)
 		{
 			if(this->board->hasPiece(i, j))
 			{
+				this->row = i;
+				this->col = j;
 				return;
 			}
 		}
@@ -237,14 +236,66 @@ bool InstanceSolver::hasNextRotation()
 	return false;
 }
 
-void InstanceSolver::rotate()
+void InstanceSolver::rotate(bool mounted)
 {
-	this->solverHeap.back()->pl->p->rotate90();
+	// Caso a peça já esteja montada:
+	if(mounted)
+	{
+		unsigned rotation = this->solverHeap.back()->pl->p->getRotationState();
+
+		retrievePiece();
+		getNextPiece();
+
+		for(unsigned i = 0; i < rotation; i++)
+		{
+			rotate();
+		}
+	}
+	else
+	{
+		this->solverHeap.back()->pl->p->rotate90();
+	}
 }
 
 string InstanceSolver::lastPieceToString()
 {
 	return this->solverHeap.back()->pl->p->toString();
+}
+
+void InstanceSolver::insertPiece()
+{
+	getNextPiece();
+
+	if(checkIfPieceFitsOnBoard())
+	{
+		nextPosition();
+		return;
+	}
+	else
+	{
+		while(true)
+		{
+			if(hasNextRotation())
+			{
+				rotate();
+				if(checkIfPieceFitsOnBoard())
+				{
+					nextPosition();
+					return;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			else
+			{
+				// Peça que não encaixou.
+				retrievePiece();
+				incrementState();
+			}
+		}
+	}
 }
 
 void InstanceSolver::fillPieceList()

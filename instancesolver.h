@@ -16,6 +16,7 @@ public:
     string pieceListToString();
 	string solverHeapToString();
 	void solveInstance();
+	void stop();
 
 private:
     int* pieces;
@@ -38,6 +39,7 @@ private:
 
     // Funções da pilha:
     bool hasNextPiece();
+	void getFirstPiece();
     void getNextPiece();
 	void retrievePiece();
     bool isPieceListEmpty();
@@ -49,8 +51,11 @@ private:
 	void lastPosition();
 	bool checkIfPieceFitsOnBoard();
 	bool hasNextRotation();
-	void rotate();
+	void rotate(bool mounted = false);
 	string lastPieceToString();
+
+	// Funções de verdade:
+	void insertPiece();
 
     // Armazena todas as peças:
     vector<int> queue;
@@ -59,6 +64,7 @@ private:
     vector<SolverHeap*> solverHeap;
 	unsigned row = 0;
 	unsigned col = 0;
+	unsigned mainState = 0;
 };
 
 #endif // INSTANCESOLVER_H

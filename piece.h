@@ -34,6 +34,7 @@ public:
 	void reallocatePivot();
     bool hasNextRotation();
 	void clearRotation();
+	unsigned getRotationState();
 private:
 	std::string text;
 	string toStringAux(Block *b);

@@ -18,9 +18,9 @@ int main()
 
 	// Gerador de instâncias funcionando:
 
-//	for(unsigned i = 10; i <= 100; ++i)
+//	for(unsigned i = 5; i <= 5; ++i)
 //	{
-//		for(unsigned j = 0; j < 999; ++j)
+//		for(unsigned j = 0; j < 1; ++j)
 //		{
 //			string a = to_string(i);
 //			string dir = a+"x"+a;
@@ -32,7 +32,7 @@ int main()
 //		}
 //	}
 
-	string path = "10x10/instance_0.txt";
+	string path = "5x5/instance_0.txt";
 	InstanceReader* IR = new InstanceReader(path);
 	int* pieces = IR->getPieces();
 	Board* b = IR->getBoard();

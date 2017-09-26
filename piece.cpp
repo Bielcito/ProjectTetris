@@ -267,6 +267,11 @@ void Piece::clearRotation()
 	}
 }
 
+unsigned Piece::getRotationState()
+{
+	return this->rotationState;
+}
+
 string Piece::toStringAux(Block* b)
 {
 	string r = "";
