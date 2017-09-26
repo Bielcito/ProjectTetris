@@ -2,18 +2,23 @@
 
 InstanceReader::InstanceReader(string path)
 {
-    ifstream file(path);
-    string line;
+	ifstream file(path);
 
+	if(!file.is_open())
+	{
+		return;
+	}
+
+	string line;
     getline(file, line);
 
-    // Inicializando campo:
+	// Inicializando campo:
     unsigned rowSize;
     unsigned colSize;
     parseLine(line, rowSize, colSize);
     this->board = new Board(rowSize, colSize);
 
-    getline(file, line);
+	getline(file, line);
 
     // Colocando muros:
     while(getline(file, line))
@@ -32,14 +37,14 @@ InstanceReader::InstanceReader(string path)
         }
     }
 
-    // Pegando conjunto de peças:
+	// Pegando conjunto de peças:
     unsigned piece;
 
-    while(getline(file, line))
+	while(getline(file, line))
     {
-        parseLineFirst(line, piece);
+		parseLineFirst(line, piece);
         this->pieces[piece]++;
-    }
+	}
 }
 
 void InstanceReader::parseLine(string line, unsigned &row, unsigned &col)
@@ -69,7 +74,7 @@ void InstanceReader::parseLineFirst(string line, unsigned &num)
     string aux;
     for(unsigned i = 0; i < line.size(); ++i)
     {
-        if(line[i] != ' ' && line[i] != '\n')
+		if(line[i] != ' ' && line[i] != '\n')
         {
             aux += line[i];
         }
@@ -77,7 +82,7 @@ void InstanceReader::parseLineFirst(string line, unsigned &num)
         {
             num = stoi(aux);
             return;
-        }
+		}
     }
 }
 

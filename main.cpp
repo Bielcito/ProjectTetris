@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
+#include <sys/stat.h>
 using std::string;
 using std::cout;
 using std::endl;
@@ -13,27 +14,31 @@ using std::runtime_error;
 
 int main()
 {
-    srand(time(0));
+	//srand(time(0));
 
-    // Comando usado para gerar as instâncias:
-//    for(unsigned i = 1; i <= 100; ++i)
-//    {
-//        for(unsigned j = 0; j < 1000; ++j)
-//        {
-//            string a = to_string(i);
-//            InstanceGenerator* g = new InstanceGenerator(i, i, InstanceGenerator::random_at_most(i/4));
-//            g->generateInstance();
-//            g->instanceToFile(a+"x"+a+"/instance_"+to_string(j)+".txt");
-//            delete g;
-//        }
-//    }
+	// Gerador de instâncias funcionando:
+	for(unsigned i = 10; i <= 100; ++i)
+	{
+		for(unsigned j = 0; j < 1000; ++j)
+		{
+			string a = to_string(i);
+			string dir = a+"x"+a;
+			mkdir(dir.c_str(), 0755);
+			InstanceGenerator* g = new InstanceGenerator(i, i, InstanceGenerator::random_at_most(i));
+			g->generateInstance();
+			g->instanceToFile(a+"x"+a+"/instance_"+to_string(j)+".txt");
+			delete g;
+		}
+	}
 
-	InstanceReader* g = new InstanceReader("10x10/instance_0.txt");
-	int* pieces = g->getPieces();
-	Board* b = g->getBoard();
+//	string path = "instances/10x10/instance_2.txt";
+//	InstanceReader* g = new InstanceReader(path);
+//	int* pieces = g->getPieces();
+//	Board* b = g->getBoard();
+//	cout << b->toString() << endl;
 
-	InstanceSolver* h = new InstanceSolver(pieces, b);
-	h->solveInstance();
+//	InstanceSolver* h = new InstanceSolver(pieces, b);
+//	h->solveInstance();
 
 //	for(unsigned i = 0; i < 999999999; ++i)
 //	{

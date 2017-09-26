@@ -75,32 +75,39 @@ bool Board::mountPiece(Piece* p, unsigned int row, unsigned int col)
 {
 	this->memoryPiece[row][col] = p;
 
-    // Caso a peça tenha sido encaixada
-	if(mountPieceAux(p->getBlocks()[p->getPivot()], NULL, row, col))
+	// Pega o pivô da peça
+	Block* aux = p->getBlocks()[p->getPivot()];
+
+	// Envia para ver se é possível encaixar no tabuleiro
+	if(mountPieceAux(aux, NULL, row, col))
 	{
 		return true;
 	}
 	else
 	{
-        removePiece(row, col);
+		// Caso não seja, deleta a peça:
+		removePiece(row, col);
 		return false;
-    }
+	}
 }
 
 void Board::removePiece(unsigned row, unsigned col)
 {
-	Block* aux = this->getSpace(row, col)->getBlock();
-	if(!aux)
+	// Verifica se há uma peça encaixada na posição row/col:
+	Piece* p = this->memoryPiece[row][col];
+
+	if(!p)
 	{
 		return;
 	}
 
-	if(this->memoryPiece[row][col])
-	{
-		this->removePieceAux(aux, aux);
-		delete this->memoryPiece[row][col];
-		this->memoryPiece[row][col] = NULL;
-	}
+	// Pega o pivô da peça que está encaixada:
+	Block* b = p->getBlocks()[p->getPivot()];
+
+	// Remove peças adjacentes:
+	this->removePieceAux(b, NULL);
+	delete p;
+	this->memoryPiece[row][col] = NULL;
 }
 
 void Board::removePieceAux(Block* actual, Block* last)
@@ -219,15 +226,15 @@ bool Board::hasSpace(int row, int col, Direction d)
 
 bool Board::mountPieceAux(Block* actual, Block* last, int row, int col)
 {
+	// Testa os parâmetros, retorna falso se menor que zero, ou se passar dos limites
+	if(row < 0 || col < 0 || row >= (int)this->rowSize || col >= (int)this->colSize)
+	{
+		return false;
+	}
+
 	// Seta o bloco:
 	this->board[row][col].setBlock(actual);
 	actual->setParentSpace(&this->board[row][col]);
-
-    // Testa os parâmetros, retorna falso se menor que zero
-    if(row < 0 || col < 0)
-    {
-        return false;
-    }
 
 	if(actual->get(Up) && actual->get(Up) != last)
 	{

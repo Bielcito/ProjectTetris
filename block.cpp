@@ -7,6 +7,7 @@ Block::Block(Piece* parentPiece)
     this->down = NULL;
     this->left = NULL;
 	this->right = NULL;
+	this->parentSpace = NULL;
 	this->index = 0;
 }
 

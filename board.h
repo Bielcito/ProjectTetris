@@ -23,7 +23,7 @@ public:
     size_t getRowSize();
     size_t getColSize();
     bool mountPiece(Piece *p, unsigned int row, unsigned int col);
-    void removePiece(unsigned row, unsigned col);
+	void removePiece(unsigned row, unsigned col);
     void removePieceAux(Block* b, Block *last);
     void insertWall(unsigned row, unsigned col);
     string memoryWallToString();
@@ -38,6 +38,7 @@ private:
 
     // Armazena todas as peças que foram encaixadas
     vector<vector<Piece*>> memoryPiece;
+
     size_t rowSize;
     size_t colSize;
 

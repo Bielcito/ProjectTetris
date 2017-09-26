@@ -99,8 +99,8 @@ void InstanceGenerator::generateInstance()
 {
     int row = this->board->getRowSize();
     int col = this->board->getColSize();
-    this->generateInstanceAux(row, col);
-    this->fillWithWalls();
+	this->generateInstanceAux(row, col);
+	this->fillWithWalls();
 }
 
 void InstanceGenerator::generateInstanceAux(unsigned row, unsigned col)
@@ -129,11 +129,23 @@ string InstanceGenerator::memoryToString()
 
     for(unsigned i = 0; i < this->memory.size(); ++i)
     {
-        result += to_string(this->memory[i].piece) + " " + to_string(this->memory[i].rotation) + " " +
-                to_string(this->memory[i].row) + " " + to_string(this->memory[i].col) + "\n";
+		result += to_string(this->memory[i].piece) + " " + to_string(this->memory[i].rotation) + " " +
+				to_string(this->memory[i].row) + " " + to_string(this->memory[i].col) + "\n";
     }
 
-    return result;
+	return result;
+}
+
+std::string InstanceGenerator::memoryPiecesToString()
+{
+	string result = "";
+
+	for(unsigned i = 0; i < this->memory.size(); ++i)
+	{
+		result += to_string(this->memory[i].piece) + "\n";
+	}
+
+	return result;
 }
 
 void InstanceGenerator::instanceToFile(string file)
@@ -145,7 +157,7 @@ void InstanceGenerator::instanceToFile(string file)
     outfile << endl;
     outfile << this->board->memoryWallToString();
     outfile << endl;
-    outfile << this->memoryToString();
+	outfile << this->memoryPiecesToString();
     outfile.close();
 }
 
@@ -162,19 +174,16 @@ bool InstanceGenerator::placeRandomPieceFromCollection(unsigned int row, unsigne
 
     for(int i = 0; i < 7; ++i)
     {
-        Piece* p = new Piece((Pieces)options[i]);
-        for(int j = 0; j < 3; j++)
-        {
-            if(this->board->mountPiece(p, row, col))
-            {
-                this->saveOnMemory(options[i], j, row, col);
-                return true;
-            }
+		for(int j = 0; j < 3; j++)
+		{
+			Piece* p = new Piece((Pieces)options[i]);
 
-            p->rotate90();
-        }
-
-        delete p;
+			if(this->board->mountPiece(p, row, col))
+			{
+				this->saveOnMemory(options[i], j, row, col);
+				return true;
+			}
+		}
     }
 
     return false;

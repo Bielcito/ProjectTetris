@@ -28,6 +28,7 @@ public:
     void generateInstanceAux(unsigned row, unsigned col);
     void saveOnMemory(unsigned piece, unsigned rotation, unsigned row, unsigned col);
     string memoryToString();
+	string memoryPiecesToString();
     void instanceToFile(string file);
 
 private:
