@@ -24,7 +24,7 @@ public:
     size_t getColSize();
 	bool mountPiece(Piece *p, unsigned int row, unsigned int col, bool deletePiece = true);
 	void removePiece(unsigned row, unsigned col, bool deletePiece);
-    void removePieceAux(Block* b, Block *last);
+	void removePieceAux(Piece* p, Block* b, Block *last);
     void insertWall(unsigned row, unsigned col);
     string memoryWallToString();
 	string memoryPieceToString();

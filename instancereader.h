@@ -16,6 +16,7 @@ class InstanceReader
 {
 public:
     InstanceReader(string path);
+	~InstanceReader();
     void parseLine(string line, unsigned &row, unsigned &col);
     void parseLineFirst(string line, unsigned &num);
     string piecesToString();

@@ -18,9 +18,9 @@ int main()
 
 	// Gerador de instâncias funcionando:
 
-//	for(unsigned i = 5; i <= 5; ++i)
+//	for(unsigned i = 6; i <= 6; ++i)
 //	{
-//		for(unsigned j = 0; j < 1; ++j)
+//		for(unsigned j = 0; j < 1000; ++j)
 //		{
 //			string a = to_string(i);
 //			string dir = a+"x"+a;
@@ -32,13 +32,18 @@ int main()
 //		}
 //	}
 
-	string path = "5x5/instance_0.txt";
-	InstanceReader* IR = new InstanceReader(path);
-	int* pieces = IR->getPieces();
-	Board* b = IR->getBoard();
+	for(int i = 0; i<1000; i++)
+	{
+		string path = "6x6/instance_"+to_string(i)+".txt";
+		InstanceReader* IR = new InstanceReader(path);
+		int* pieces = IR->getPieces();
+		Board* b = IR->getBoard();
 
-	InstanceSolver* IS = new InstanceSolver(pieces, b);
-	IS->solveInstance();
+		InstanceSolver* IS = new InstanceSolver(pieces, b);
+		IS->solveInstance();
+		cout << i << endl;
+		usleep(10000);
+	}
 
 //	for(unsigned i = 0; i < 999999999; ++i)
 //	{

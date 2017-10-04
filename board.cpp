@@ -106,7 +106,7 @@ void Board::removePiece(unsigned row, unsigned col, bool deletePiece)
 	Block* b = p->getBlocks()[p->getPivot()];
 
 	// Remove peças adjacentes:
-	this->removePieceAux(b, NULL);
+	this->removePieceAux(p, b, NULL);
 
 	if(deletePiece)
 	{
@@ -116,28 +116,31 @@ void Board::removePiece(unsigned row, unsigned col, bool deletePiece)
 	this->memoryPiece[row][col] = NULL;
 }
 
-void Board::removePieceAux(Block* actual, Block* last)
+void Board::removePieceAux(Piece *p, Block* actual, Block* last)
 {
     if(actual->get(Up) && actual->get(Up) != last)
     {
-        removePieceAux(actual->get(Up), actual);
+		removePieceAux(p, actual->get(Up), actual);
     }
     if(actual->get(Down) && actual->get(Down) != last)
     {
-        removePieceAux(actual->get(Down), actual);
+		removePieceAux(p, actual->get(Down), actual);
     }
     if(actual->get(Left) && actual->get(Left) != last)
     {
-        removePieceAux(actual->get(Left), actual);
+		removePieceAux(p, actual->get(Left), actual);
     }
     if(actual->get(Right) && actual->get(Right) != last)
     {
-        removePieceAux(actual->get(Right), actual);
+		removePieceAux(p, actual->get(Right), actual);
     }
 
 	if(actual->getParentSpace())
 	{
-		actual->getParentSpace()->deleteBlock();
+		if(actual->getParentSpace()->getBlock() == actual)
+		{
+			actual->getParentSpace()->deleteBlock();
+		}
 	}
 }
 

@@ -8,11 +8,13 @@ using std::vector;
 using std::string;
 using std::to_string;
 using std::iterator;
+using std::cin;
 
 class InstanceSolver
 {
 public:
     InstanceSolver(int* pieces, Board* b);
+	~InstanceSolver();
     string pieceListToString();
 	string solverHeapToString();
 	void solveInstance();
@@ -35,20 +37,23 @@ private:
 	{
 		PieceList* pl;
 		unsigned state;
+		bool mounted = false;
 	};
 
     // Funções da pilha:
     bool hasNextPiece();
 	void getFirstPiece();
     void getNextPiece();
-	void retrievePiece();
+	void retrievePiece(bool clearRotation = true);
     bool isPieceListEmpty();
 	void insertToPieceList(PieceList* pl);
 	void incrementState();
+	void resetState();
 
 	// Funções do board:
 	void nextPosition();
 	void lastPosition();
+	void lastPositionRecursive();
 	bool checkIfPieceFitsOnBoard();
 	bool hasNextRotation();
 	void rotate(bool mounted = false);
@@ -56,6 +61,8 @@ private:
 
 	// Funções de verdade:
 	void insertPiece();
+	void checkForRetrieve();
+	bool checkIfEnds();
 
     // Armazena todas as peças:
     vector<int> queue;

@@ -5,7 +5,20 @@ InstanceSolver::InstanceSolver(int* pieces, Board* b)
     this->pieces = pieces;
     this->board = b;
 
-    this->fillPieceList();
+	this->fillPieceList();
+}
+
+InstanceSolver::~InstanceSolver()
+{
+	for(unsigned i = 0; i < pieceList.size(); i++)
+	{
+		delete pieceList[i]->p;
+	}
+
+	for(unsigned i = 0; i < solverHeap.size(); i++)
+	{
+		delete solverHeap[i]->pl->p;
+	}
 }
 
 string InstanceSolver::pieceListToString()
@@ -50,6 +63,11 @@ void InstanceSolver::getNextPiece()
 		state = this->solverHeap.back()->state;
 	}
 
+	if(state >= this->pieceList.size())
+	{
+		return;
+	}
+
 	// Salvo a peça que está na lista:
 	PieceList* pl = this->pieceList[state];
 
@@ -64,7 +82,7 @@ void InstanceSolver::getNextPiece()
 	this->solverHeap.push_back(sh);
 }
 
-void InstanceSolver::retrievePiece()
+void InstanceSolver::retrievePiece(bool clearRotation)
 {
 	// Retira a peça do tabuleiro:
 	if(this->board->hasPiece(row, col))
@@ -74,6 +92,12 @@ void InstanceSolver::retrievePiece()
 
 	// Guarda a última peça do solver:
     PieceList* pl = this->solverHeap.back()->pl;
+
+	// Reseta a rotação da peça:
+	if(clearRotation)
+	{
+		pl->p->clearRotation();
+	}
 
 	//delete this->solverHeap.back();
 	this->solverHeap.pop_back();
@@ -105,35 +129,23 @@ string InstanceSolver::solverHeapToString()
 
 void InstanceSolver::solveInstance()
 {
-	insertPiece();
-	stop();
+	// Verifica se o espaço inicial é um muro, se não estiver, pega o próximo:
+	if(board->getSpace(row, col)->isWall())
+	{
+		nextPosition();
+	}
 
-	insertPiece();
-	stop();
+	getNextPiece();
 
-	insertPiece();
-	stop();
-
-	insertPiece();
-	stop();
-
-	insertPiece();
-	stop();
-
-	insertPiece();
-	stop();
-
-	insertPiece();
-	stop();
-
-	insertPiece();
-	stop();
-
-	insertPiece();
-	stop();
-
-	insertPiece();
-	stop();
+	while(true)
+	{
+		checkForRetrieve();
+		insertPiece();
+		if(checkIfEnds())
+		{
+			return;
+		}
+	}
 }
 
 void InstanceSolver::stop()
@@ -149,13 +161,20 @@ void InstanceSolver::stop()
 
 void InstanceSolver::insertToPieceList(PieceList* pl)
 {
-    for(unsigned i = 0; i < this->pieceList.size(); ++i)
-    {
-		if(pl->value < this->pieceList[i]->value || i == this->pieceList.size()-1)
-        {
-			this->pieceList.insert(this->pieceList.begin()+i, pl);
-			break;
-        }
+	if(this->pieceList.size() == 0)
+	{
+		this->pieceList.push_back(pl);
+	}
+	else
+	{
+		for(unsigned i = 0; i <= this->pieceList.size(); ++i)
+		{
+			if(pl->value < this->pieceList[i]->value || i == this->pieceList.size())
+			{
+				this->pieceList.insert(this->pieceList.begin()+i, pl);
+				break;
+			}
+		}
 	}
 }
 
@@ -171,53 +190,102 @@ void InstanceSolver::incrementState()
 	}
 }
 
+void InstanceSolver::resetState()
+{
+	if(this->solverHeap.empty())
+	{
+		this->mainState = 0;
+	}
+	else
+	{
+		this->solverHeap.back()->state = 0;
+	}
+}
+
 void InstanceSolver::nextPosition()
 {
-	for(unsigned i = this->row; i < this->board->getRowSize(); ++i)
+	while(true)
 	{
-		for(unsigned j = this->col+1; j < this->board->getColSize(); ++j)
+		if(row == board->getRowSize()-1 && col == board->getColSize()-1)
 		{
-			if(this->board->getSpace(i, j)->isEmpty())
+			return;
+		}
+		else
+		{
+			col++;
+			if(col == board->getColSize())
 			{
-				this->row = i;
-				this->col = j;
+				col = 0;
+				row++;
+			}
+
+			if(board->getSpace(row, col)->isEmpty())
+			{
 				return;
 			}
 		}
-
-		this->col = 0;
 	}
 }
 
 void InstanceSolver::lastPosition()
 {
-	if(solverHeap.size() == 0)
+	while(true)
 	{
-		return;
-	}
-
-	for(int i = this->row; i >= 0; --i)
-	{
-		for(int j = this->col-1; j >= 0; --j)
+		if(row == 0 && col == 0)
 		{
-			if(this->board->hasPiece(i, j))
+			return;
+		}
+		else
+		{
+			if(col == 0)
 			{
-				this->row = i;
-				this->col = j;
+				col = board->getColSize()-1;
+				row--;
+			}
+			else
+			{
+				col--;
+			}
+
+			if(!board->getSpace(row, col)->isWall())
+			{
 				return;
 			}
 		}
+	}
+}
 
-		this->col = this->board->getColSize()-1;
+void InstanceSolver::lastPositionRecursive()
+{
+	while(true)
+	{
+		if(row == 0 && col == 0)
+		{
+			return;
+		}
+
+		lastPosition();
+
+		if(board->hasPiece(row, col))
+		{
+			return;
+		}
 	}
 }
 
 bool InstanceSolver::checkIfPieceFitsOnBoard()
 {
+	// Verifica se há alguma peça a ser verificada:
+	if(solverHeap.size() == 0)
+	{
+		return false;
+	}
+
 	Piece* p = this->solverHeap.back()->pl->p;
 
 	if(this->board->mountPiece(p, this->row, this->col, false))
 	{
+		this->solverHeap.back()->mounted = true;
 		return true;
 	}
 	else
@@ -264,37 +332,122 @@ string InstanceSolver::lastPieceToString()
 
 void InstanceSolver::insertPiece()
 {
-	getNextPiece();
-
+	// Verifica se ela encaixa:
 	if(checkIfPieceFitsOnBoard())
 	{
+		// Caso encaixe, muda a posição para a próxima:
 		nextPosition();
+		getNextPiece();
 		return;
 	}
 	else
 	{
+		// Caso não encaixe, começa o processo para ver se deve retirar a peça ou não:
 		while(true)
 		{
+			// Verifica se o solver tem alguma peça, se não tiver, sai do loop.
+			if(this->solverHeap.size() == 0)
+			{
+				break;
+			}
+			// Caso a peça tenha uma próxima rotação
 			if(hasNextRotation())
 			{
+				// Rotaciona
 				rotate();
+				// Verifica se encaixa
 				if(checkIfPieceFitsOnBoard())
 				{
+					// Caso encaixe, vai para a próxima posição.
 					nextPosition();
+					// Pega a próxima peça:
+					getNextPiece();
 					return;
 				}
 				else
 				{
+					// Caso não encaixe, repete o processo:
 					continue;
 				}
 			}
 			else
 			{
-				// Peça que não encaixou.
 				retrievePiece();
+				//lastPosition();
+
 				incrementState();
+				getNextPiece();
+				break;
 			}
 		}
+	}
+}
+
+void InstanceSolver::checkForRetrieve()
+{
+	// Verifica se o state é maior que o número de peças em PieceList:
+	while(true)
+	{
+		// Verifica se há peças no solveHeap:
+		if(solverHeap.size() == 0)
+		{
+			getNextPiece();
+			break;
+		}
+
+		if(!solverHeap.back()->mounted)
+		{
+			return;
+		}
+
+		if(solverHeap.back()->state >= pieceList.size())
+		{
+			// Verifica se tem próxima rotação, se tiver, rotaciona e continua o processo:
+			if(hasNextRotation())
+			{
+				lastPositionRecursive();
+				retrievePiece(false);
+				getNextPiece();
+				rotate();
+				resetState();
+				break;
+			}
+			else
+			{
+				// Verifica se tem peça na posição atual, se não tiver, volta para a posição anterior
+				if(!this->board->hasPiece(row, col))
+				{
+					lastPositionRecursive();
+				}
+
+				retrievePiece();
+				incrementState();
+
+				if(solverHeap.size() > 0)
+				{
+					if(!(solverHeap.back()->state >= pieceList.size()))
+					{
+						getNextPiece();
+					}
+				}
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+bool InstanceSolver::checkIfEnds()
+{
+	if(pieceList.size() == 0 && solverHeap.back()->mounted)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 

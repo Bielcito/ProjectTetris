@@ -3,11 +3,16 @@
 InstanceReader::InstanceReader(string path)
 {
 	this->pieces = new int[7];
+	for(unsigned i = 0; i < 7; i++)
+	{
+		pieces[i] = 0;
+	}
 
 	ifstream file(path);
 
 	if(!file.is_open())
 	{
+		cout << "Não foi possível ler o caminho " << path << endl;
 		return;
 	}
 
@@ -47,6 +52,12 @@ InstanceReader::InstanceReader(string path)
 		parseLineFirst(line, piece);
         this->pieces[piece]++;
 	}
+}
+
+InstanceReader::~InstanceReader()
+{
+	delete board;
+	delete[] pieces;
 }
 
 void InstanceReader::parseLine(string line, unsigned &row, unsigned &col)
