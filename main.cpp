@@ -12,29 +12,41 @@ using std::cout;
 using std::endl;
 using std::runtime_error;
 
-int main()
+/**
+ * @brief generateInstances
+ * Cria 'num' instâncias de tamanho 'de' até 'ate'.
+ * @param de
+ * @param ate
+ * @param num
+ */
+void generateInstances(unsigned de, unsigned ate, unsigned num)
 {
-	srand(time(0));
-
-	// Gerador de instâncias funcionando:
-
-//	for(unsigned i = 6; i <= 6; ++i)
-//	{
-//		for(unsigned j = 0; j < 1000; ++j)
-//		{
-//			string a = to_string(i);
-//			string dir = a+"x"+a;
-//			mkdir(dir.c_str(), 0755);
-//			InstanceGenerator* IG = new InstanceGenerator(i, i, InstanceGenerator::random_at_most(i));
-//			IG->generateInstance();
-//			IG->instanceToFile(a+"x"+a+"/instance_"+to_string(j)+".txt");
-//			delete IG;
-//		}
-//	}
-
-	for(int i = 0; i<1000; i++)
+	for(unsigned i = de; i <= ate; ++i)
 	{
-		string path = "6x6/instance_"+to_string(i)+".txt";
+		for(unsigned j = 0; j < num; ++j)
+		{
+			string a = to_string(i);
+			string dir = a+"x"+a;
+			mkdir(dir.c_str(), 0755);
+			InstanceGenerator* IG = new InstanceGenerator(i, i, InstanceGenerator::random_at_most(i));
+			IG->generateInstance();
+			IG->instanceToFile(a+"x"+a+"/instance_"+to_string(j)+".txt");
+			delete IG;
+		}
+	}
+}
+
+/**
+ * @brief instanceSolver
+ * Resolve 'num' instâncias de problemas de tamanho 'number'.
+ * @param num
+ * @param number
+ */
+void instanceSolver(unsigned num, unsigned number)
+{
+	for(int i = 0; i<num; i++)
+	{
+		string path = to_string(number)+"x"+to_string(number)+"/instance_"+to_string(i)+".txt";
 		InstanceReader* IR = new InstanceReader(path);
 		int* pieces = IR->getPieces();
 		Board* b = IR->getBoard();
@@ -44,30 +56,37 @@ int main()
 		cout << i << endl;
 		usleep(10000);
 	}
+}
 
-//	for(unsigned i = 0; i < 999999999; ++i)
-//	{
-//		Board* a = new Board(3, 3);
+int main()
+{
+	srand(time(0));
 
-//		Piece* p = new Piece(Pieces::T);
-//		p->rotate90();
-//		p->rotate90();
-//		p->rotate90();
-//		a->mountPiece(p, 0, 0);
+	/* Não executar a função de gerar instâncias e de resolver
+	 instâncias ao mesmo tempo, elas não foram feitas para
+	 trabalhar juntas.
+	*/
 
-//		Piece* p2 = new Piece(Pieces::_L);
-//		p2->rotate90();
-//		a->mountPiece(p2, 0, 2);
+	// Gera instâncias, descomentar:
+	// generateInstances(4, 10, 1000);
 
-//		cout << a->toString() << endl;
+	// Resolve as intâncias, descomentar:
+	// instanceSolver(1000, 7);
 
-//		a->removePiece(0, 0);
-
-//		cout << a->toString() << endl;
-
-//		delete a;
-//		usleep(1);
-//	}
+	/* Infelizmente essa função "instanceSolver" está com memory leak em algum lugar...
+	 o uso de memória vai aumentando aos poucos, é algo que
+	 não deu tempo de corrigir, mas que provavelmente não é tão difícil.
+	 recomendo resolver um número pequeno de instâncias, e acompanhar pelo comando
+	 'top' o quanto a memória está incrementando.
+	 o processo de acúmulo de memória é um tanto lento para um método de brute force,
+	 quanto maior o tamanho do tabuleiro, mais rápido aumenta o uso de memória.
+	 O tempo médio para estourar a memória é de uns 5 minutos, dependo da velocidade
+	 de processamento do computador.
+	 mas mesmo assim, recomendo parar o processo quando atingr uns 50% do uso de memória.
+	 PARA PARAR A EXECUÇÃO, BASTA DAR UM CTRL+C NA JANELA DE EXECUÇÃO DO CÓDIGO.
+	 Para 1000 instâncias de tamanho igual a 4, 5 e 6, o risco de dar problemas é muito baixo.
+	 Para 1000 instâncias de tamanho 7 para cima, comece a se preocupar
+	*/
 
 	return 0;
 
