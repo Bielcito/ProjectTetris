@@ -18,6 +18,7 @@ public:
     string pieceListToString();
 	string solverHeapToString();
 	void solveInstance();
+	void solveInstance2();
 	void stop();
 
 private:

@@ -91,7 +91,9 @@ void InstanceSolver::retrievePiece(bool clearRotation)
 	}
 
 	// Guarda a última peça do solver:
-    PieceList* pl = this->solverHeap.back()->pl;
+	SolverHeap* aux = this->solverHeap.back();
+	PieceList* pl = aux->pl;
+	delete aux;
 
 	// Reseta a rotação da peça:
 	if(clearRotation)
@@ -129,7 +131,7 @@ string InstanceSolver::solverHeapToString()
 
 void InstanceSolver::solveInstance()
 {
-	// Verifica se o espaço inicial é um muro, se não estiver, pega o próximo:
+	// Verifica se o espaço inicial é um muro, se não for, pega o próximo:
 	if(board->getSpace(row, col)->isWall())
 	{
 		nextPosition();
@@ -145,6 +147,22 @@ void InstanceSolver::solveInstance()
 		{
 			return;
 		}
+	}
+}
+
+void InstanceSolver::solveInstance2()
+{
+	if(board->getSpace(row, col)->isWall())
+	{
+		nextPosition();
+	}
+
+	getNextPiece();
+
+	while(true)
+	{
+		getNextPiece();
+		retrievePiece();
 	}
 }
 

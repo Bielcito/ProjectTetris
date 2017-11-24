@@ -7,10 +7,14 @@
 #include <string>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <chrono>
 using std::string;
 using std::cout;
 using std::endl;
 using std::runtime_error;
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::microseconds;
 
 /**
  * @brief generateInstances
@@ -44,6 +48,9 @@ void generateInstances(unsigned de, unsigned ate, unsigned num)
  */
 void instanceSolver(unsigned num, unsigned number)
 {
+	cout << "Resolvendo " << num << " instâncias de tamanho " << number << "x" << number << "." << endl;
+	cout << "Pressione qualquer tecla para continuar..." << endl;
+	cin.get();
 	for(int i = 0; i<num; i++)
 	{
 		string path = to_string(number)+"x"+to_string(number)+"/instance_"+to_string(i)+".txt";
@@ -52,10 +59,16 @@ void instanceSolver(unsigned num, unsigned number)
 		Board* b = IR->getBoard();
 
 		InstanceSolver* IS = new InstanceSolver(pieces, b);
+		high_resolution_clock::time_point t1 = high_resolution_clock::now();
 		IS->solveInstance();
-		cout << i << endl;
+		high_resolution_clock::time_point t2 = high_resolution_clock::now();
+		auto duration = duration_cast<microseconds>( t2 - t1 ).count();
+		delete IR;
+		delete IS;
+		cout << i << " " << duration << endl;
 		usleep(10000);
 	}
+	cout << "Todas as instâncias foram resolvidas" << endl;
 }
 
 int main()
@@ -67,26 +80,11 @@ int main()
 	 trabalhar juntas.
 	*/
 
-	// Gera instâncias, descomentar:
-	// generateInstances(4, 10, 1000);
+	// Gera instâncias de tamanho 4x4 até 7x7, descomentar:
+	// generateInstances(4, 7, 1000);
 
-	// Resolve as intâncias, descomentar:
-	// instanceSolver(1000, 7);
-
-	/* Infelizmente essa função "instanceSolver" está com memory leak em algum lugar...
-	 o uso de memória vai aumentando aos poucos, é algo que
-	 não deu tempo de corrigir, mas que provavelmente não é tão difícil.
-	 recomendo resolver um número pequeno de instâncias, e acompanhar pelo comando
-	 'top' o quanto a memória está incrementando.
-	 o processo de acúmulo de memória é um tanto lento para um método de brute force,
-	 quanto maior o tamanho do tabuleiro, mais rápido aumenta o uso de memória.
-	 O tempo médio para estourar a memória é de uns 5 minutos, dependo da velocidade
-	 de processamento do computador.
-	 mas mesmo assim, recomendo parar o processo quando atingr uns 50% do uso de memória.
-	 PARA PARAR A EXECUÇÃO, BASTA DAR UM CTRL+C NA JANELA DE EXECUÇÃO DO CÓDIGO.
-	 Para 1000 instâncias de tamanho igual a 4, 5 e 6, o risco de dar problemas é muito baixo.
-	 Para 1000 instâncias de tamanho 7 para cima, comece a se preocupar
-	*/
+	// Resolve as intâncias de tamanho 4x4, descomentar:
+	instanceSolver(1000, 6);
 
 	return 0;
 
