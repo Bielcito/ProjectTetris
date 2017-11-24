@@ -14,11 +14,6 @@ InstanceSolver::~InstanceSolver()
 	{
 		delete pieceList[i]->p;
 	}
-
-	for(unsigned i = 0; i < solverHeap.size(); i++)
-	{
-		delete solverHeap[i]->pl->p;
-	}
 }
 
 string InstanceSolver::pieceListToString()
