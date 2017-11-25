@@ -30,8 +30,15 @@ string InstanceSolver::pieceListToString()
 
 bool InstanceSolver::hasNextPiece()
 {
+	if(this->solverHeap.size() == 0 && this->pieceList.size() > 0)
+	{
+		return true;
+	}
+
 	if(this->solverHeap.back()->state >= this->pieceList.size()-1)
     {
+		cout << "Sem próximas peças." << endl;
+		cout << this->solverHeap.size() << endl;
         return false;
     }
     else
@@ -145,20 +152,65 @@ void InstanceSolver::solveInstance()
 	}
 }
 
-void InstanceSolver::solveInstance2()
+void InstanceSolver::solveHeuristic()
 {
 	if(board->getSpace(row, col)->isWall())
 	{
 		nextPosition();
 	}
 
-	getNextPiece();
-
 	while(true)
 	{
+		// Para, caso não tenha próxima peça para ser pega.
+		if(!hasNextPiece())
+		{
+			cout << "Não tem próxima peça. Resetou estado." << endl;
+			resetState();
+			if(!hasNextPosition())
+			{
+				cout << "Não tem próxima posição." << endl;
+				break;
+			}
+			else
+			{
+				cout << "next" << endl;
+				nextPosition();
+			}
+		}
+
+		// Pega próxima peça.
+		cout << "Pegou próxima peça." << endl;
 		getNextPiece();
-		retrievePiece();
+
+		while(true)
+		{
+			stop();
+			if(checkIfPieceFitsOnBoard())
+			{
+				cout << "Peça encaixou. Next." << endl;
+				nextPosition();
+				break;
+			}
+			else
+			{
+				cout << "Não encaixou." << endl;
+				if(hasNextRotation())
+				{
+					cout << "Rotacionou." << endl;
+					rotate();
+				}
+				else
+				{
+					cout << "Devolveu." << endl;
+					retrievePiece();
+					incrementState();
+					break;
+				}
+			}
+		}
 	}
+
+	stop();
 }
 
 void InstanceSolver::stop()
@@ -212,6 +264,18 @@ void InstanceSolver::resetState()
 	else
 	{
 		this->solverHeap.back()->state = 0;
+	}
+}
+
+bool InstanceSolver::hasNextPosition()
+{
+	if(this->row < this->board->getRowSize()-1 || this->col < this->board->getColSize()-1)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 

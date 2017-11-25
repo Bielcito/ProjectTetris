@@ -60,7 +60,7 @@ void instanceSolver(unsigned num, unsigned number)
 
 		InstanceSolver* IS = new InstanceSolver(pieces, b);
 		high_resolution_clock::time_point t1 = high_resolution_clock::now();
-		IS->solveInstance();
+		IS->solveHeuristic();
 		high_resolution_clock::time_point t2 = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>( t2 - t1 ).count();
 		delete IR;
@@ -81,10 +81,10 @@ int main()
 	*/
 
 	// Gera instâncias de tamanho 4x4 até 7x7, descomentar:
-	// generateInstances(4, 7, 1000);
+//	generateInstances(200, 200, 1);
 
 	// Resolve as intâncias de tamanho 4x4, descomentar:
-	instanceSolver(1000, 6);
+	instanceSolver(1, 7);
 
 	return 0;
 

@@ -18,7 +18,7 @@ public:
     string pieceListToString();
 	string solverHeapToString();
 	void solveInstance();
-	void solveInstance2();
+	void solveHeuristic();
 	void stop();
 
 private:
@@ -52,6 +52,7 @@ private:
 	void resetState();
 
 	// Funções do board:
+	bool hasNextPosition();
 	void nextPosition();
 	void lastPosition();
 	void lastPositionRecursive();
