@@ -51,7 +51,7 @@ void instanceSolver(unsigned num, unsigned number)
 	cout << "Resolvendo " << num << " instâncias de tamanho " << number << "x" << number << "." << endl;
 	cout << "Pressione qualquer tecla para continuar..." << endl;
 	cin.get();
-	for(int i = 0; i<num; i++)
+    for(unsigned i = 0; i<num; i++)
 	{
 		string path = to_string(number)+"x"+to_string(number)+"/instance_"+to_string(i)+".txt";
 		InstanceReader* IR = new InstanceReader(path);
@@ -81,10 +81,10 @@ int main()
 	*/
 
 	// Gera instâncias de tamanho 4x4 até 7x7, descomentar:
-//	generateInstances(200, 200, 1);
+//    generateInstances(4, 10, 100);
 
 	// Resolve as intâncias de tamanho 4x4, descomentar:
-	instanceSolver(1, 7);
+    instanceSolver(1, 7);
 
 	return 0;
 

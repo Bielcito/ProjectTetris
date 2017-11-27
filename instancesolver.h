@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 #include "board.h"
 using std::vector;
 using std::string;
@@ -25,6 +26,8 @@ private:
     int* pieces;
     Board* board;
     void fillPieceList();
+    int* generateTwoRandomNumbersWithoutRepeat(unsigned size);
+    long random_at_most(long max);
 
 	// Armazena as peças de forma que possam ser inseridas de forma ordenada
 	struct PieceList
@@ -40,6 +43,10 @@ private:
 		unsigned state;
 		bool mounted = false;
 	};
+
+	// Funções do solverHeuristic:
+	void returnPieceToInicialPosition(Piece* p, unsigned row, unsigned col, unsigned rotation);
+	bool changeTwoRandomPiecesPosition();
 
     // Funções da pilha:
     bool hasNextPiece();
