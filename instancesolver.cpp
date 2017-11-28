@@ -165,26 +165,31 @@ void InstanceSolver::solveHeuristic(unsigned time)
 
 	while(true)
 	{
+		int max = 500;
+
 		t2 = high_resolution_clock::now();
 		unsigned duration = duration_cast<microseconds>( t2 - t1 ).count();
 		if(duration > time)
 		{
 			break;
 		}
-		cout << duration << endl;
 
-		/*t2 =
-		diff = t2 - t1;
+		removeBunchPieces(1 - (double) duration / time);
 
-		removeBunchPieces();
-		if(changeRandomPieceWithRandomEmptySpace() || changeTwoRandomPiecesPosition())
+		while(insertAnotherPiece());
+
+		while(max >= 0)
 		{
-			if(insertAnotherPiece())
+			if(changeTwoRandomPiecesPosition() || changeRandomPieceWithRandomEmptySpace())
 			{
-				break;
+				insertAnotherPiece();
 			}
-		}*/
+
+			max--;
+		}
 	}
+
+	stop();
 }
 
 void InstanceSolver::stop()
@@ -628,9 +633,13 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 	// Pega duas peças aleatórias, remove-as e pega suas posições:
 	int a1 = 0, a2 = 0, b1 = 0, b2 = 0;
 	Piece *a = NULL,*b = NULL;
+	if(solverHeap.size() < 2)
+	{
+		return false;
+	}
 	int* numbers = generateTwoRandomNumbersWithoutRepeat(solverHeap.size()-1);
 
-//	cout << "nubmers: " << numbers[0] << " " << numbers[1] << endl;
+//	cout << "numbers: " << numbers[0] << " " << numbers[1] << endl;
 
 	int counter = 0;
 
@@ -863,6 +872,11 @@ bool InstanceSolver::insertAnotherPiece()
 
 bool InstanceSolver::removeBunchPieces(double factor)
 {
+	if(solverHeap.size() == 0)
+	{
+		return false;
+	}
+
 	// Inicializando vetor de peças:
 	vector<int> pieces = vector<int>(this->solverHeap.size());
 	for(unsigned i = 0; i < this->solverHeap.size(); ++i)
@@ -877,7 +891,6 @@ bool InstanceSolver::removeBunchPieces(double factor)
 	unsigned counter = 0;
 	unsigned value = (this->solverHeap.size()-1) * factor;
 	unsigned piecesToBeRemoved = random_at_most(value)+1;
-	cout << "removendo " << piecesToBeRemoved << " peças." << endl;
 
 	// Removendo as peças:
 	for(unsigned i = 0; i < this->board->getRowSize(); ++i)

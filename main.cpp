@@ -85,7 +85,7 @@ int main()
 //	generateInstances(4, 10, 100);
 
 	// Resolve as intâncias de tamanho 4x4, descomentar:
-	instanceSolver(1, 7, 50000);
+	instanceSolver(1, 7, 5000000);
 
 	return 0;
 
