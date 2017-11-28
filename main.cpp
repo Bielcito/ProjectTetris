@@ -45,8 +45,9 @@ void generateInstances(unsigned de, unsigned ate, unsigned num)
  * Resolve 'num' instâncias de problemas de tamanho 'number'.
  * @param num
  * @param number
+ * @param time		tempo de execução
  */
-void instanceSolver(unsigned num, unsigned number)
+void instanceSolver(unsigned num, unsigned number, unsigned time)
 {
 	cout << "Resolvendo " << num << " instâncias de tamanho " << number << "x" << number << "." << endl;
 	cout << "Pressione qualquer tecla para continuar..." << endl;
@@ -60,7 +61,7 @@ void instanceSolver(unsigned num, unsigned number)
 
 		InstanceSolver* IS = new InstanceSolver(pieces, b);
 		high_resolution_clock::time_point t1 = high_resolution_clock::now();
-		IS->solveHeuristic();
+		IS->solveHeuristic(time);
 		high_resolution_clock::time_point t2 = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>( t2 - t1 ).count();
 		delete IR;
@@ -81,10 +82,10 @@ int main()
 	*/
 
 	// Gera instâncias de tamanho 4x4 até 7x7, descomentar:
-//    generateInstances(4, 10, 100);
+//	generateInstances(4, 10, 100);
 
 	// Resolve as intâncias de tamanho 4x4, descomentar:
-    instanceSolver(1, 7);
+	instanceSolver(1, 7, 50000);
 
 	return 0;
 

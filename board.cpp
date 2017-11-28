@@ -243,6 +243,24 @@ bool Board::hasSpace(int row, int col, Direction d)
 	return false;
 }
 
+int Board::memoryPieceCount()
+{
+	int count = 0;
+
+	for(unsigned i = 0; i < rowSize; ++i)
+	{
+		for(unsigned j = 0; j < colSize; ++j)
+		{
+			if(hasPiece(i,j))
+			{
+				++count;
+			}
+		}
+	}
+
+	return count;
+}
+
 bool Board::mountPieceAux(Block* actual, Block* last, int row, int col)
 {
 	// Testa os parâmetros, retorna falso se menor que zero, ou se passar dos limites

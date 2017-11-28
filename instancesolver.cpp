@@ -152,77 +152,38 @@ void InstanceSolver::solveInstance()
 	}
 }
 
-void InstanceSolver::solveHeuristic()
+void InstanceSolver::solveHeuristic(unsigned time)
 {
-	// Shuffle PieceList.
-	std::random_shuffle(pieceList.begin(), pieceList.end());
+	// Configuração inicial:
+	firstConfiguration();
 
-	if(board->getSpace(row, col)->isWall())
-	{
-		nextPosition();
-	}
+	// Início da meta-heurística:
+	high_resolution_clock::time_point t1, t2, diff;
+
+	// Tempo que inicia a metaheurística:
+	t1 = high_resolution_clock::now();
 
 	while(true)
 	{
-		// Para, caso não tenha próxima peça para ser pega.
-		if(!hasNextPiece())
+		t2 = high_resolution_clock::now();
+		unsigned duration = duration_cast<microseconds>( t2 - t1 ).count();
+		if(duration > time)
 		{
-//			cout << "Não tem próxima peça. Resetou estado." << endl;
-			resetState();
-			if(!hasNextPosition())
+			break;
+		}
+		cout << duration << endl;
+
+		/*t2 =
+		diff = t2 - t1;
+
+		removeBunchPieces();
+		if(changeRandomPieceWithRandomEmptySpace() || changeTwoRandomPiecesPosition())
+		{
+			if(insertAnotherPiece())
 			{
-//				cout << "Não tem próxima posição." << endl;
 				break;
 			}
-			else
-			{
-//				cout << "next" << endl;
-				nextPosition();
-			}
-		}
-
-		// Pega próxima peça.
-//		cout << "Pegou próxima peça." << endl;
-		getNextPiece();
-
-		while(true)
-		{
-			if(checkIfPieceFitsOnBoard())
-			{
-//				cout << "Peça encaixou. Next." << endl;
-				nextPosition();
-				break;
-			}
-			else
-			{
-//				cout << "Não encaixou." << endl;
-				if(hasNextRotation())
-				{
-//					cout << "Rotacionou." << endl;
-					rotate();
-				}
-				else
-				{
-//					cout << "Devolveu." << endl;
-					retrievePiece();
-					incrementState();
-					break;
-				}
-			}
-		}
-	}
-
-//    cout << "Parte gulosa terminada:" << endl;
-//    cout << "Trying to delete a piece." << endl;
-    cin.get();
-
-	if(changeTwoRandomPiecesPosition())
-	{
-		cout << "AWE!" << endl;
-	}
-	else
-	{
-		cout << "POXA...." << endl;
+		}*/
 	}
 }
 
@@ -601,11 +562,72 @@ void InstanceSolver::returnPieceToInicialPosition(Piece *p, unsigned p1, unsigne
 	this->board->mountPiece(p, p1, p2, false);
 }
 
+void InstanceSolver::firstConfiguration()
+{
+	// Shuffle PieceList.
+	std::random_shuffle(pieceList.begin(), pieceList.end());
+
+	if(board->getSpace(row, col)->isWall())
+	{
+		nextPosition();
+	}
+
+	while(true)
+	{
+		// Para, caso não tenha próxima peça para ser pega.
+		if(!hasNextPiece())
+		{
+//			cout << "Não tem próxima peça. Resetou estado." << endl;
+			resetState();
+			if(!hasNextPosition())
+			{
+//				cout << "Não tem próxima posição." << endl;
+				break;
+			}
+			else
+			{
+//				cout << "next" << endl;
+				nextPosition();
+			}
+		}
+
+		// Pega próxima peça.
+//		cout << "Pegou próxima peça." << endl;
+		getNextPiece();
+
+		while(true)
+		{
+			if(checkIfPieceFitsOnBoard())
+			{
+//				cout << "Peça encaixou. Next." << endl;
+				nextPosition();
+				break;
+			}
+			else
+			{
+//				cout << "Não encaixou." << endl;
+				if(hasNextRotation())
+				{
+//					cout << "Rotacionou." << endl;
+					rotate();
+				}
+				else
+				{
+//					cout << "Devolveu." << endl;
+					retrievePiece();
+					incrementState();
+					break;
+				}
+			}
+		}
+	}
+}
+
 bool InstanceSolver::changeTwoRandomPiecesPosition()
 {
 	// Pega duas peças aleatórias, remove-as e pega suas posições:
-	int a1, a2, b1, b2;
-	Piece* a,* b;
+	int a1 = 0, a2 = 0, b1 = 0, b2 = 0;
+	Piece *a = NULL,*b = NULL;
 	int* numbers = generateTwoRandomNumbersWithoutRepeat(solverHeap.size()-1);
 
 //	cout << "nubmers: " << numbers[0] << " " << numbers[1] << endl;
@@ -618,8 +640,6 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 		{
 			if(this->board->hasPiece(i, j))
 			{
-				++counter;
-
 				if(counter == numbers[0])
 				{
 					a = this->board->getSpace(i, j)->getBlock()->getParentPiece();
@@ -634,6 +654,8 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 					b2 = j;
 					this->board->removePiece(i, j, false);
 				}
+
+				++counter;
 			}
 		}
 	}
@@ -645,6 +667,13 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 	unsigned aR = a->getRotationState();
 	unsigned bR = b->getRotationState();
 
+	if(a->getNumber() == b->getNumber())
+	{
+		returnPieceToInicialPosition(a, a1, a2, aR);
+		returnPieceToInicialPosition(b, b1, b2, bR);
+		return false;
+	}
+
 	a->clearRotation();
 	b->clearRotation();
 
@@ -654,6 +683,7 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 		if(this->board->mountPiece(a, b1, b2, false))
 		{
 			isA = true;
+			break;
 		}
 		else
 		{
@@ -676,6 +706,7 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 			if(this->board->mountPiece(b, a1, a2, false))
 			{
 				isB = true;
+				break;
 			}
 			else
 			{
@@ -685,6 +716,11 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 				}
 				else
 				{
+					// Funcionou A e não funcionou B:
+					// Retira-se o A, e para.
+					// Volta para a posição o A.
+					this->board->removePiece(b1, b2, false);
+					returnPieceToInicialPosition(a, a1, a2, aR);
 					break;
 				}
 			}
@@ -707,10 +743,187 @@ bool InstanceSolver::changeTwoRandomPiecesPosition()
 	return false;
 }
 
+bool InstanceSolver::changeRandomPieceWithRandomEmptySpace()
+{
+	// Escolhe a peça que será apagada para ser trocada com algum espaço em branco, salvando ela em 'a' e depois removendo-a:
+	unsigned number = (unsigned) random_at_most(this->solverHeap.size()-1);
+	unsigned a1, a2;
+	Piece* a;
+
+	unsigned counter = 0;
+
+	for(unsigned i = 0; i < this->board->getRowSize(); ++i)
+	{
+		for(unsigned j = 0; j < this->board->getColSize(); j++)
+		{
+			if(this->board->hasPiece(i, j))
+			{
+				if(counter == number)
+				{
+					a = this->board->getSpace(i, j)->getBlock()->getParentPiece();
+					a1 = i;
+					a2 = j;
+					this->board->removePiece(i, j, false);
+				}
+
+				++counter;
+			}
+		}
+	}
+
+	// Salva a posição inicial da peça:
+	unsigned aR = a->getRotationState();
+
+	// Percorre os espaços vazios sobrando e tenta encaixar a peça, evitando encaixar na mesma posição em que ela já se encontrava:
+	for(unsigned i = 0; i < this->board->getRowSize(); ++i)
+	{
+		for(unsigned j = 0; j < this->board->getColSize(); ++j)
+		{
+			if(this->board->getSpace(i, j)->isEmpty())
+			{
+				a->clearRotation();
+
+				while(true)
+				{
+					if(i != a1 && j != a2 && a->getRotationState() != aR)
+					{
+						if(this->board->mountPiece(a, i, j, false))
+						{
+							return true;
+						}
+						else
+						{
+							if(a->hasNextRotation())
+							{
+								a->rotate90();
+							}
+							else
+							{
+								break;
+							}
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	returnPieceToInicialPosition(a, a1, a2, aR);
+
+	return false;
+}
+
+bool InstanceSolver::insertAnotherPiece()
+{
+	// Percorre a pilha de peças disponíveis para serem encaixadas, e tenta encaixá-las em cada um dos espaços no tabuleiro:
+	for(unsigned i = 0; i < this->pieceList.size(); ++i)
+	{
+		PieceList* pl = this->pieceList[i];
+
+		for(unsigned j = 0; j < this->board->getRowSize(); ++j)
+		{
+			for(unsigned k = 0; k < this->board->getColSize(); ++k)
+			{
+				if(this->board->getSpace(j, k)->isEmpty())
+				{
+					while(true)
+					{
+						if(this->board->mountPiece(pl->p, j, k, false))
+						{
+							this->pieceList.erase(this->pieceList.begin() + i);
+							SolverHeap* sh = new SolverHeap();
+							sh->pl = pl;
+							sh->state = 0;
+							this->solverHeap.push_back(sh);
+							return true;
+						}
+						else
+						{
+							if(pl->p->hasNextRotation())
+							{
+								pl->p->rotate90();
+							}
+							else
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+bool InstanceSolver::removeBunchPieces(double factor)
+{
+	// Inicializando vetor de peças:
+	vector<int> pieces = vector<int>(this->solverHeap.size());
+	for(unsigned i = 0; i < this->solverHeap.size(); ++i)
+	{
+		pieces[i] = i;
+	}
+
+	// Embaralhando:
+	std::random_shuffle(std::begin(pieces), std::end(pieces));
+
+	// Definindo o número de peças que serão removidas:
+	unsigned counter = 0;
+	unsigned value = (this->solverHeap.size()-1) * factor;
+	unsigned piecesToBeRemoved = random_at_most(value)+1;
+	cout << "removendo " << piecesToBeRemoved << " peças." << endl;
+
+	// Removendo as peças:
+	for(unsigned i = 0; i < this->board->getRowSize(); ++i)
+	{
+		for(unsigned j = 0; j < this->board->getColSize(); ++j)
+		{
+			if(this->board->hasPiece(i, j))
+			{
+				// Verifica se a peça que existe é igual a alguma das peças a serem deletadas:
+				for(unsigned m = 0; m < piecesToBeRemoved; m++)
+				{
+					if(pieces[m] == counter)
+					{
+						// Caso tenha alguma peça na posição especificada, salva ela em uma variavel auxiliar,
+						// adiciona ela resetada ao pieceList, e apaga ela do tabuleiro.
+						Piece* p = this->board->getSpace(i, j)->getBlock()->getParentPiece();
+						PieceList* pl = new PieceList();
+						pl->p = p;
+						pl->value = 0;
+						this->pieceList.push_back(pl);
+						this->board->removePiece(i, j, false);
+
+						// Remove a peça do solverHeap:
+						for(unsigned k = 0; k < solverHeap.size(); ++k)
+						{
+							if(solverHeap[k]->pl->p == p)
+							{
+								solverHeap.erase(solverHeap.begin() + k);
+								break;
+							}
+						}
+					}
+				}
+
+				++counter;
+			}
+		}
+	}
+
+	return false;
+}
+
 int* InstanceSolver::generateTwoRandomNumbersWithoutRepeat(unsigned size)
 {
     int* numbers = new int[2];
-    int a = (int) random_at_most(size);
+	int a = (int) random_at_most(size);
     numbers[0] = a;
     int b = random_at_most(1);
     if((b == 0 || a == (int)size) && a != 0)

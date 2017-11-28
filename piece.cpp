@@ -19,6 +19,7 @@ Piece::Piece(Pieces P)
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[1]->connect(blocks[3], Direction::Down);
 		this->text = " T";
+		this->number = 1;
     }
     // x 1 2
     // 3
@@ -28,6 +29,7 @@ Piece::Piece(Pieces P)
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[0]->connect(blocks[3], Direction::Down);
 		this->text = " L";
+		this->number = 2;
     }
     // x 1 2
     //     3
@@ -37,6 +39,7 @@ Piece::Piece(Pieces P)
         this->blocks[1]->connect(blocks[2], Direction::Right);
         this->blocks[2]->connect(blocks[3], Direction::Down);
 		this->text = "_L";
+		this->number = 3;
     }
     //   x 1
     // 2 3
@@ -47,6 +50,7 @@ Piece::Piece(Pieces P)
 		this->blocks[0]->connect(blocks[3], Direction::Down);
 		this->isAxisRotationEqual = true;
 		this->text = " S";
+		this->number = 4;
     }
     // x 1
     //   2 3
@@ -57,6 +61,7 @@ Piece::Piece(Pieces P)
         this->blocks[1]->connect(blocks[2], Direction::Down);
 		this->isAxisRotationEqual = true;
 		this->text = "_S";
+		this->number = 5;
     }
     // x 1 2 3
     else if(P == Pieces::I)
@@ -66,6 +71,7 @@ Piece::Piece(Pieces P)
         this->blocks[2]->connect(blocks[3], Direction::Right);
 		this->isAxisRotationEqual = true;
 		this->text = " I";
+		this->number = 6;
     }
     // x 1
     // 2 3
@@ -76,6 +82,7 @@ Piece::Piece(Pieces P)
         this->blocks[0]->connect(blocks[2], Direction::Down);
 		this->isAllRotationEqual = true;
 		this->text = " O";
+		this->number = 0;
 	}
 }
 
@@ -270,6 +277,11 @@ void Piece::clearRotation()
 unsigned Piece::getRotationState()
 {
 	return this->rotationState;
+}
+
+unsigned Piece::getNumber()
+{
+	return this->number;
 }
 
 string Piece::toStringAux(Block* b)

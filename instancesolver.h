@@ -4,12 +4,16 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <chrono>
 #include "board.h"
 using std::vector;
 using std::string;
 using std::to_string;
 using std::iterator;
 using std::cin;
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::microseconds;
 
 class InstanceSolver
 {
@@ -19,7 +23,7 @@ public:
     string pieceListToString();
 	string solverHeapToString();
 	void solveInstance();
-	void solveHeuristic();
+	void solveHeuristic(unsigned time);
 	void stop();
 
 private:
@@ -46,7 +50,11 @@ private:
 
 	// Funções do solverHeuristic:
 	void returnPieceToInicialPosition(Piece* p, unsigned row, unsigned col, unsigned rotation);
+	void firstConfiguration();
 	bool changeTwoRandomPiecesPosition();
+	bool changeRandomPieceWithRandomEmptySpace();
+	bool insertAnotherPiece();
+	bool removeBunchPieces(double factor);
 
     // Funções da pilha:
     bool hasNextPiece();

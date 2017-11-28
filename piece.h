@@ -35,6 +35,7 @@ public:
     bool hasNextRotation();
 	void clearRotation();
 	unsigned getRotationState();
+	unsigned getNumber();
 private:
 	std::string text;
 	string toStringAux(Block *b);
@@ -43,6 +44,7 @@ private:
 	bool isAxisRotationEqual = false;
 	bool isAllRotationEqual = false;
     unsigned rotationState = 0;
+	unsigned number;
 };
 
 #endif // PIECE_H

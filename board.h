@@ -32,6 +32,7 @@ public:
 
 	Space* getSpace(unsigned int row, unsigned int col);
 	bool hasSpace(int row, int col, Direction d);
+	int memoryPieceCount();
 
 private:
 
