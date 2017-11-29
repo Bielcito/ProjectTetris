@@ -61,15 +61,13 @@ void instanceSolver(unsigned num, unsigned number, unsigned time)
 
 		InstanceSolver* IS = new InstanceSolver(pieces, b);
 		high_resolution_clock::time_point t1 = high_resolution_clock::now();
-		IS->solveHeuristic(time);
+		IS->solveInstance();
 		high_resolution_clock::time_point t2 = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>( t2 - t1 ).count();
 		delete IR;
 		delete IS;
-		cout << i << " " << duration << endl;
-		usleep(10000);
+		cout << duration << endl;
 	}
-	cout << "Todas as instâncias foram resolvidas" << endl;
 }
 
 int main()
@@ -85,7 +83,7 @@ int main()
 //	generateInstances(4, 10, 100);
 
 	// Resolve as intâncias de tamanho 4x4, descomentar:
-	instanceSolver(1, 7, 5000000);
+	instanceSolver(10, 8, 5000000);
 
 	return 0;
 
