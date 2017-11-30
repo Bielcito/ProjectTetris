@@ -85,11 +85,12 @@ int main()
 	 trabalhar juntas.
 	*/
 
-	// Gera instâncias de tamanho 4x4 até 7x7, descomentar:
-//	generateInstances(15, 15, 1);
+	// Gera 10 instâncias de tamanho 15x15, descomentar:
+//	generateInstances(15, 15, 10);
 
-	// Resolve as intâncias de tamanho 4x4, descomentar:
-	instanceSolver(1, 15, 5000000);
+	// Resolve as intâncias de tamanho 15x15, descomentar:
+//	instanceSolver(1, 15, 0);
+//	instanceSolver(1, 15, 5000000);
 
 	return 0;
 
