@@ -171,10 +171,21 @@ void InstanceSolver::solveHeuristic(unsigned time)
 		unsigned duration = duration_cast<microseconds>( t2 - t1 ).count();
 		if(duration > time)
 		{
+			stop();
 			break;
 		}
 
-		removeBunchPieces(1 - (double) duration / time);
+		double factor = 1 - (double) duration / time;
+		if(factor < 0.75)
+		{
+			factor = 0;
+		}
+		else
+		{
+			factor = factor - 0.50;
+		}
+
+		removeBunchPieces(factor);
 
 		while(insertAnotherPiece());
 
@@ -188,8 +199,6 @@ void InstanceSolver::solveHeuristic(unsigned time)
 			max--;
 		}
 	}
-
-	stop();
 }
 
 void InstanceSolver::stop()
@@ -201,6 +210,11 @@ void InstanceSolver::stop()
 	cout << "row: " << row << " col: " << col << endl;
 	std::cin.get();
 	system("clear");
+}
+
+int InstanceSolver::countFreeSpaces()
+{
+	return this->pieceList.size() * 4;
 }
 
 void InstanceSolver::insertToPieceList(PieceList* pl)
@@ -611,18 +625,9 @@ void InstanceSolver::firstConfiguration()
 			else
 			{
 //				cout << "Não encaixou." << endl;
-				if(hasNextRotation())
-				{
-//					cout << "Rotacionou." << endl;
-					rotate();
-				}
-				else
-				{
-//					cout << "Devolveu." << endl;
-					retrievePiece();
-					incrementState();
-					break;
-				}
+				retrievePiece();
+				incrementState();
+				break;
 			}
 		}
 	}

@@ -52,6 +52,7 @@ void instanceSolver(unsigned num, unsigned number, unsigned time)
 	cout << "Resolvendo " << num << " instâncias de tamanho " << number << "x" << number << "." << endl;
 	cout << "Pressione qualquer tecla para continuar..." << endl;
 	cin.get();
+	double media = 0;
     for(unsigned i = 0; i<num; i++)
 	{
 		string path = to_string(number)+"x"+to_string(number)+"/instance_"+to_string(i)+".txt";
@@ -61,13 +62,18 @@ void instanceSolver(unsigned num, unsigned number, unsigned time)
 
 		InstanceSolver* IS = new InstanceSolver(pieces, b);
 		high_resolution_clock::time_point t1 = high_resolution_clock::now();
-		IS->solveInstance();
+		IS->solveHeuristic(time);
 		high_resolution_clock::time_point t2 = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>( t2 - t1 ).count();
 		delete IR;
 		delete IS;
 		cout << duration << endl;
+		media = media + duration;
 	}
+
+	media = media / num;
+
+	cout << "Media: " << media << endl;
 }
 
 int main()
@@ -80,10 +86,10 @@ int main()
 	*/
 
 	// Gera instâncias de tamanho 4x4 até 7x7, descomentar:
-//	generateInstances(4, 10, 100);
+//	generateInstances(15, 15, 1);
 
 	// Resolve as intâncias de tamanho 4x4, descomentar:
-	instanceSolver(10, 8, 5000000);
+	instanceSolver(1, 15, 5000000);
 
 	return 0;
 

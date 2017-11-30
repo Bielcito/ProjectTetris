@@ -25,6 +25,7 @@ public:
 	void solveInstance();
 	void solveHeuristic(unsigned time);
 	void stop();
+	int countFreeSpaces();
 
 private:
     int* pieces;
